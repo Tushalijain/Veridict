@@ -7,11 +7,14 @@ const judgeService = async (language, code, testCases) => {
 
     // Generate source file
     const filePath = await generateFile(language, code);
+    let executionTime = 0;
 
     // Execute each test case
     for (const testCase of testCases) {
 
         try {
+
+            const start = Date.now();
 
             const output = await executeCode(
                 language,
@@ -19,11 +22,15 @@ const judgeService = async (language, code, testCases) => {
                 testCase.input
             );
 
+            const end = Date.now();
+            executionTime = end - start;
+
             if (!compareOutput(output, testCase.output)) {
 
                 return {
                     verdict: VERDICTS.WRONG_ANSWER,
                     passed: false,
+                    executionTime,
                     input: testCase.input,
                     expected: testCase.output,
                     output
@@ -36,6 +43,7 @@ const judgeService = async (language, code, testCases) => {
             return {
                 verdict: error.type,
                 passed: false,
+                executionTime: 0,
                 error: error.message
             };
 
@@ -44,9 +52,10 @@ const judgeService = async (language, code, testCases) => {
     }
 
     return {
-        verdict: VERDICTS.ACCEPTED,
-        passed: true
-    };
+    verdict: VERDICTS.ACCEPTED,
+    passed: true,
+    executionTime
+};
 
 };
 

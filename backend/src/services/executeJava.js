@@ -9,7 +9,20 @@ const executeJava = (filePath, input = "") => {
     return new Promise((resolve, reject) => {
 
         // Compile Main.java
-        const compile = spawn("javac", [filePath]);
+       const fileName = path.basename(filePath);
+
+        const compile = spawn("docker", [
+            "run",
+            "--rm",
+            "--network", "none",
+            "--memory", "128m",
+            "--cpus", "1",
+            "-v", `${dir}:/app`,
+            "-w", "/app",
+            "eclipse-temurin:21",
+            "javac",
+            fileName
+        ]);
 
         let compileError = "";
 
@@ -38,10 +51,19 @@ const executeJava = (filePath, input = "") => {
             }
 
             // Run Main.class
-            const execute = spawn("java", ["Main"], {
-                cwd: dir
-            });
-
+            const execute = spawn("docker", [
+            "run",
+            "--rm",
+            "-i",
+            "--network", "none",
+            "--memory", "128m",
+            "--cpus", "1",
+            "-v", `${dir}:/app`,
+            "-w", "/app",
+            "eclipse-temurin:21",
+            "java",
+            "Main"
+        ]);
             // Time Limit (2 seconds)
             const timeout = setTimeout(() => {
 
@@ -70,7 +92,7 @@ const executeJava = (filePath, input = "") => {
                 runtimeError += data.toString();
             });
 
-            execute.stdin.write(input);
+            execute.stdin.write(input + "\n");
             execute.stdin.end();
 
             execute.on("close", (runCode) => {

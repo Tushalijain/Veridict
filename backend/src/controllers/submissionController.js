@@ -1,6 +1,7 @@
 const Submission = require("../models/Submission");
 const Problem = require("../models/Problem");
 const TestCase = require("../models/TestCase");
+
 const judgeService = require("../services/judgeService");
 
 const createSubmission = async (req, res) => {
@@ -27,22 +28,26 @@ const createSubmission = async (req, res) => {
             });
         }
 
-        // Judge the submission
-        const result = await judgeService(language, code, testCases);
+       
+       // Judge the submission
+const result = await judgeService(language, code, testCases);
 
-        // Save submission
-        const submission = await Submission.create({
-          user: userId,
-          problem: problemId,
-          language,
-          code,
-          verdict: result.verdict,
-          executionTime: result.executionTime || 0
+console.log("Judge Result:", result);
+console.log("Judge Verdict:", result.verdict);
+
+// Save submission
+const submission = await Submission.create({
+    user: userId,
+    problem: problemId,
+    language,
+    code,
+    verdict: result.verdict,
+    executionTime: result.executionTime || 0
 });
-
         return res.status(201).json({
             success: true,
-            submission
+            submission,
+            result
         });
 
     } catch (error) {
@@ -70,7 +75,31 @@ const getSubmissions = async (req, res) => {
     }
 };
 
+const getUserSubmissions = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const submissions = await Submission.find({ userId })
+      .populate("problemId", "title")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      submissions,
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch submissions",
+    });
+  }
+};
+
 module.exports = {
-    createSubmission,
-    getSubmissions
+  createSubmission,
+  getSubmissions,
+  getUserSubmissions,
 };

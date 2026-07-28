@@ -10,10 +10,21 @@ const executeC = (filePath, input = "") => {
     return new Promise((resolve, reject) => {
 
         // Compile C
-        const compile = spawn("gcc", [
-            filePath,
+        const fileName = path.basename(filePath);
+
+        const compile = spawn("docker", [
+            "run",
+            "--rm",
+            "--network", "none",
+            "--memory", "128m",
+            "--cpus", "1",
+            "-v", `${dir}:/app`,
+            "-w", "/app",
+            "gcc:latest",
+            "gcc",
+            fileName,
             "-o",
-            path.join(dir, executable)
+            executable
         ]);
 
         let compileError = "";
@@ -37,7 +48,18 @@ const executeC = (filePath, input = "") => {
             }
 
             // Run executable
-            const execute = spawn(path.join(dir, executable));
+            const execute = spawn("docker", [
+            "run",
+            "--rm",
+            "-i",
+            "--network", "none",
+            "--memory", "128m",
+            "--cpus", "1",
+            "-v", `${dir}:/app`,
+            "-w", "/app",
+            "gcc:latest",
+            `./${executable}`
+        ]);
 
             const timeout = setTimeout(() => {
 
@@ -66,7 +88,7 @@ const executeC = (filePath, input = "") => {
                 runtimeError += data.toString();
             });
 
-            execute.stdin.write(input);
+            execute.stdin.write(input + "\n");
             execute.stdin.end();
 
             execute.on("close", (runCode) => {
