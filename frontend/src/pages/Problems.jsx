@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 
 function Problems() {
   const [problems, setProblems] = useState([]);
+  const [search, setSearch] = useState("");
+  const [difficulty, setDifficulty] = useState("All");
 
   useEffect(() => {
     fetchProblems();
@@ -20,15 +22,42 @@ function Problems() {
   };
 
   return (
+     <>
+    <Navbar />
     <div className="min-h-screen bg-gray-100 p-8">
 
       <h1 className="text-4xl font-bold mb-8">
         Problems
       </h1>
 
+     <div className="flex flex-col md:flex-row gap-4 mb-6">
+
+  <input
+    type="text"
+    placeholder="🔍 Search problems..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full md:w-96 p-3 border rounded-lg shadow-sm"
+  />
+
+  <select
+    value={difficulty}
+    onChange={(e) => setDifficulty(e.target.value)}
+    className="p-3 border rounded-lg shadow-sm"
+  >
+    <option value="All">All</option>
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
+
+</div>
+
       <div className="space-y-4">
 
-        {problems.map((problem) => (
+        {problems.filter((problem) => problem.title.toLowerCase().includes(search.toLowerCase())).filter((problem) =>
+    difficulty === "All" || problem.difficulty === difficulty
+  ).map((problem) => (
 
           <div
             key={problem._id}
@@ -59,71 +88,10 @@ function Problems() {
       </div>
 
     </div>
-  );
-
-  return (
-    <>
-      <Navbar />
-
-      <div className="min-h-screen bg-gray-100 p-8">
-        <h1 className="text-4xl font-bold mb-2">
-          Welcome, {user?.name} 👋
-        </h1>
-
-        <p className="text-gray-600 mb-8">
-          {user?.email}
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Problems</h2>
-            <p className="text-3xl font-bold mt-3">
-              {problems.length}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Submissions</h2>
-            <p className="text-3xl font-bold mt-3">
-              {submissions.length}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Accepted</h2>
-            <p className="text-3xl font-bold mt-3">
-              {accepted}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Accuracy</h2>
-            <p className="text-3xl font-bold mt-3">
-              {accuracy}%
-            </p>
-          </div>
-
-        </div>
-
-        <div className="mt-8 flex gap-4">
-          <Link
-            to="/problems"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-          >
-            Solve Problems
-          </Link>
-
-          <Link
-            to="/submissions"
-            className="bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition"
-          >
-            Submission History
-          </Link>
-        </div>
-      </div>
     </>
   );
+
+  
 
   
 }

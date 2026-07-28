@@ -12,6 +12,7 @@ function SubmissionHistory() {
   const fetchSubmissions = async () => {
     try {
       const response = await api.get("/submissions");
+       console.log(response.data);
       setSubmissions(response.data);
     } catch (error) {
       console.error(error);
@@ -19,6 +20,8 @@ function SubmissionHistory() {
   };
 
   return (
+    <>
+     <Navbar />
     <div className="min-h-screen bg-gray-100 p-8">
 
       <h1 className="text-4xl font-bold mb-8">
@@ -49,7 +52,10 @@ function SubmissionHistory() {
 
           <tbody>
 
-            {submissions.map((submission) => (
+            {submissions.map((submission) => {
+  console.log("Rendering:", submission);
+
+  return (
 
               <tr
                 key={submission._id}
@@ -64,15 +70,23 @@ function SubmissionHistory() {
                   {submission.language}
                 </td>
 
-                <td
-                  className={`p-4 font-semibold ${
+                <td className="p-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
                     submission.verdict === "Accepted"
-                      ? "text-green-600"
-                      : "text-red-600"
+                      ? "bg-green-100 text-green-700"
+                      : submission.verdict === "Wrong Answer"
+                      ? "bg-red-100 text-red-700"
+                      : submission.verdict === "Compilation Error"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : submission.verdict === "Runtime Error"
+                      ? "bg-orange-100 text-orange-700"
+                      : "bg-gray-100 text-gray-700"
                   }`}
                 >
                   {submission.verdict}
-                </td>
+                </span>
+              </td>
 
                 <td className="p-4">
                   {submission.executionTime} ms
@@ -84,7 +98,8 @@ function SubmissionHistory() {
 
               </tr>
 
-            ))}
+            );
+})}
 
           </tbody>
 
@@ -93,71 +108,10 @@ function SubmissionHistory() {
       </div>
 
     </div>
+  </>
   );
 
-  return (
-    <>
-      <Navbar />
-
-      <div className="min-h-screen bg-gray-100 p-8">
-        <h1 className="text-4xl font-bold mb-2">
-          Welcome, {user?.name} 👋
-        </h1>
-
-        <p className="text-gray-600 mb-8">
-          {user?.email}
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Problems</h2>
-            <p className="text-3xl font-bold mt-3">
-              {problems.length}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Submissions</h2>
-            <p className="text-3xl font-bold mt-3">
-              {submissions.length}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Accepted</h2>
-            <p className="text-3xl font-bold mt-3">
-              {accepted}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold">Accuracy</h2>
-            <p className="text-3xl font-bold mt-3">
-              {accuracy}%
-            </p>
-          </div>
-
-        </div>
-
-        <div className="mt-8 flex gap-4">
-          <Link
-            to="/problems"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-          >
-            Solve Problems
-          </Link>
-
-          <Link
-            to="/submissions"
-            className="bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition"
-          >
-            Submission History
-          </Link>
-        </div>
-      </div>
-    </>
-  );
+  
 
   
 }
