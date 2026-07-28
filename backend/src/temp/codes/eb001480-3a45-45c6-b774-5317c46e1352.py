@@ -1,1 +1,0 @@
-print('Hello Online Judge')
