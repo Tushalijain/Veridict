@@ -16,6 +16,13 @@ const problemSchema = new mongoose.Schema({
   constraints: {
     type: String
   },
+  examples: [
+  {
+    input: String,
+    output: String,
+    explanation: String,
+  },
+],
   code: {
     type: String
   }
