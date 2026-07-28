@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
@@ -7,12 +7,21 @@ import Problems from "../pages/Problems";
 import ProblemDetails from "../pages/ProblemDetails";
 import SubmissionHistory from "../pages/SubmissionHistory";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Leaderboard from "../pages/Leaderboard";
+import Profile from "../pages/Profile";
+import Contests from "../pages/Contests";
+import ContestArena from "../pages/ContestArena";
+import NotFound from "../pages/NotFound";
+
+
+
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
@@ -46,6 +55,18 @@ function AppRoutes() {
               </ProtectedRoute>
             }
         />
+        <Route
+            path="/leaderboard"
+            element={
+              <ProtectedRoute>
+                <Leaderboard />
+              </ProtectedRoute>
+             }
+         />
+         <Route path="/profile" element={<Profile />} />
+         <Route path="/contests" element={<Contests />} />
+         <Route path="/contest/:id" element={<ContestArena />}/>
+         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
