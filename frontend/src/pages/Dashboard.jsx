@@ -7,6 +7,7 @@ function Dashboard() {
   const [problems, setProblems] = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDashboardData();
@@ -19,8 +20,10 @@ function Dashboard() {
 
       setProblems(problemRes.data);
       setSubmissions(submissionRes.data);
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -33,6 +36,19 @@ function Dashboard() {
       ? ((accepted / submissions.length) * 100).toFixed(2)
       : 0;
 
+if (loading) {
+  return (
+    <>
+      <Navbar />
+      <div className="min-h-screen flex justify-center items-center">
+        <h1 className="text-2xl font-semibold text-gray-500">
+          Loading Dashboard...
+        </h1>
+      </div>
+    </>
+  );
+}
+
   return (
     <>
       <Navbar />
@@ -42,34 +58,36 @@ function Dashboard() {
           Welcome, {user?.name} 👋
         </h1>
 
+        
+
         <p className="text-gray-600 mb-8">
           {user?.email}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-blue-100 p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold">Problems</h2>
             <p className="text-3xl font-bold mt-3">
               {problems.length}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-purple-100 p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold">Submissions</h2>
             <p className="text-3xl font-bold mt-3">
               {submissions.length}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-green-100 p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold">Accepted</h2>
             <p className="text-3xl font-bold mt-3">
               {accepted}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-yellow-100 p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold">Accuracy</h2>
             <p className="text-3xl font-bold mt-3">
               {accuracy}%
@@ -93,6 +111,52 @@ function Dashboard() {
             Submission History
           </Link>
         </div>
+        <div className="mt-10 bg-white rounded-lg shadow p-6">
+
+  <h2 className="text-2xl font-bold mb-5">
+    Recent Activity
+  </h2>
+
+  {submissions.length === 0 ? (
+    <p className="text-gray-500">
+      No submissions yet.
+    </p>
+  ) : (
+    <div className="space-y-4">
+
+      {submissions.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5).map((submission) => (
+        <div
+          key={submission._id}
+          className="flex justify-between items-center border-b pb-3"
+        >
+
+          <div>
+            <h3 className="font-semibold">
+              {submission.problem?.title || "Problem"}
+            </h3>
+
+            <p className="text-sm text-gray-500">
+              {submission.language.toUpperCase()}
+            </p>
+          </div>
+
+          <span
+            className={`font-semibold ${
+              submission.verdict === "Accepted"
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {submission.verdict}
+          </span>
+
+        </div>
+      ))}
+
+    </div>
+  )}
+
+</div>
       </div>
     </>
   );
