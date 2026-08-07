@@ -3,39 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Button from "../components/Button";
 import { HiEye, HiEyeSlash } from "react-icons/hi2";
-import { googleLogin } from "../firebase/googleAuth";
+
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
 
-  const handleGoogleRegister = async () => {
-  try {
-    const user = await googleLogin();
-
-    const idToken = await user.getIdToken();
-
-    const response = await axios.post(
-  `${import.meta.env.VITE_API_URL}/auth/google`,
-  {
-    idToken,
-  }
-);
-
-    console.log(response.data);
-
-    localStorage.setItem(
-      "token",
-      response.data.token
-    );
-
-    navigate("/dashboard");
-
-  } catch (error) {
-    console.log(error);
-  }
-};
+ 
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -350,7 +325,7 @@ py-8
         </div>
 
         {/* Google Button */}
-<div className="px-2 pt-2">
+{/* <div className="px-2 pt-2">
        <Button
   type="button"
   variant="secondary"
@@ -359,7 +334,7 @@ py-8
   <FcGoogle className="text-xl" />
   Sign up with Google
 </Button>
-        </div>
+        </div> */}
 
                 {/* Login */}
 

@@ -4,7 +4,7 @@ import api from "../services/api";
 import Button from "../components/Button";
 import { HiEye, HiEyeSlash } from "react-icons/hi2";
 import { FcGoogle } from "react-icons/fc";
-import { googleLogin } from "../firebase/googleAuth";
+
 import axios from "axios";
 
 function Login() {
@@ -14,34 +14,34 @@ function Login() {
 
   const navigate = useNavigate();
 
-const handleGoogleLogin = async () => {
-  try {
-    const user = await googleLogin();
+// const handleGoogleLogin = async () => {
+//   try {
+//     const user = await googleLogin();
 
-    const idToken = await user.getIdToken();
+//     const idToken = await user.getIdToken();
 
-   const response = await axios.post(
-  `${import.meta.env.VITE_API_URL}/auth/google`,
-  {
-    idToken,
-  }
-);
+//    const response = await axios.post(
+//   `${import.meta.env.VITE_API_URL}/auth/google`,
+//   {
+//     idToken,
+//   }
+// );
 
-    console.log(response.data);
+//     console.log(response.data);
 
-    // save JWT
-    localStorage.setItem(
-      "token",
-      response.data.token
-    );
+//     // save JWT
+//     localStorage.setItem(
+//       "token",
+//       response.data.token
+//     );
 
-    // redirect after login
-    navigate("/dashboard");
+//     // redirect after login
+//     navigate("/dashboard");
 
-  } catch (error) {
-    console.log(error);
-  }
-};
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -217,14 +217,14 @@ py-8
 
 
 {/* Google Sign In */}
-<Button
+{/* <Button
   type="button"
   variant="secondary"
   onClick={handleGoogleLogin}
 >
    <FcGoogle className="text-xl" />
   Continue with Google
-</Button>
+</Button> */}
 
 {/* Register */}
 
