@@ -1,30 +1,24 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require("../config/firebaseAdmin");
-const { getAuth } = require("firebase-admin/auth");
+// require("../config/firebaseAdmin");
+// const { getAuth } = require("firebase-admin/auth");
 const crypto = require("crypto");
-
 const register = async (req,res)=> {
     try{
        const{name,email,password} = req.body;
-       
        if (!name || !email || !password ) {
             return res.status(400).json({
                 message: "All fields are required"
             });
         }
-
         const existingUser = await User.findOne({ email });
-
         if (existingUser) {
             return res.status(409).json({
                 message: "User already exists"
             });
         }
-
         const hashedPassword = await bcrypt.hash(password, 10);
-
         user = await User.create({
     name,
     email,
@@ -164,6 +158,5 @@ const googleLogin = async (req, res) => {
 
 module.exports = {
     register,
-    login,
-    googleLogin
+    login
 };
