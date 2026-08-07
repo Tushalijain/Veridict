@@ -8,32 +8,22 @@ const compiledExecutables = new Map();
 const executeCpp = (filePath, input = "") => {
   const dir = path.dirname(filePath);
   const fileName = path.basename(filePath);
-  const executable =
-    process.platform === "win32" ? "Main.exe" : "Main";
+  const executable = process.platform === "win32" ? "Main.exe" : "Main";
 
   return new Promise((resolve, reject) => {
     const runProgram = () => {
-      const execute = spawn("docker", [
-        "run",
-        "--rm",
-        "-i",
-        "--network",
-        "none",
-        "--memory",
-        "128m",
-        "--cpus",
-        "1",
-        "-v",
-        `${dir}:/app`,
-        "-w",
-        "/app",
-        "gcc:latest",
-        `./${executable}`,
-      ]);
+      const execPath =
+        process.platform === "win32"
+          ? path.join(dir, executable)
+          : `./${executable}`;
+
+      const execute = spawn(execPath, [], {
+        cwd: dir,
+      });
 
       const timeout = setTimeout(() => {
         execute.kill();
-
+        cleanupFiles(filePath, path.join(dir, executable));
         reject({
           type: VERDICTS.TIME_LIMIT_EXCEEDED,
           message: "Program exceeded 2 seconds.",
@@ -54,10 +44,12 @@ const executeCpp = (filePath, input = "") => {
       execute.stdin.write(input);
       execute.stdin.end();
 
-      execute.on("close", (runCode) => {
+      execute.on("close", (code) => {
         clearTimeout(timeout);
 
-        if (runCode !== 0) {
+        cleanupFiles(filePath, path.join(dir, executable));
+
+        if (code !== 0) {
           return reject({
             type: VERDICTS.RUNTIME_ERROR,
             message: runtimeError || "Runtime Error",
@@ -72,25 +64,9 @@ const executeCpp = (filePath, input = "") => {
       return runProgram();
     }
 
-    const compile = spawn("docker", [
-      "run",
-      "--rm",
-      "--network",
-      "none",
-      "--memory",
-      "128m",
-      "--cpus",
-      "1",
-      "-v",
-      `${dir}:/app`,
-      "-w",
-      "/app",
-      "gcc:latest",
-      "g++",
-      fileName,
-      "-o",
-      executable,
-    ]);
+    const compile = spawn("g++", [fileName, "-o", executable], {
+      cwd: dir,
+    });
 
     let compileError = "";
 
