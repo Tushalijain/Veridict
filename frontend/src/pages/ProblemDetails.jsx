@@ -93,20 +93,20 @@ console.log("Contest ID:", contestId);
     setRunning(true);
     setOutput("Running...");
 
-    const response = await fetch(
-      "http://localhost:5000/api/compiler/run",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          language,
-          code,
-          input: customInput,
-        }),
-      }
-    );
+   const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/compiler/run`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      language,
+      code,
+      input: customInput,
+    }),
+  }
+);
 
     const data = await response.json();
 
