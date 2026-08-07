@@ -17,11 +17,11 @@ function Register() {
     const idToken = await user.getIdToken();
 
     const response = await axios.post(
-      "http://localhost:5000/api/auth/google",
-      {
-        idToken,
-      }
-    );
+  `${import.meta.env.VITE_API_URL}/auth/google`,
+  {
+    idToken,
+  }
+);
 
     console.log(response.data);
 
