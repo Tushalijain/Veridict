@@ -208,9 +208,7 @@ py-8
 <div className="flex items-center gap-4 mt-8 mb-6">
   <div className="flex-1 h-px bg-slate-700"></div>
 
-  <span className="text-slate-500 font-medium">
-    OR
-  </span>
+  
 
   <div className="flex-1 h-px bg-slate-700"></div>
 </div>

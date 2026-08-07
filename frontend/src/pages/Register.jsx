@@ -316,9 +316,7 @@ py-8
 
           <div className="flex-1 h-px bg-slate-700"></div>
 
-          <span className="text-slate-500 text-sm">
-            OR
-          </span>
+          
 
           <div className="flex-1 h-px bg-slate-700"></div>
 
