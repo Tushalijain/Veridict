@@ -71,19 +71,25 @@ const getRemainingTime = (targetTime) => {
 
   return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 };
-
-
   return (
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gray-100 p-8">
+      <div className="min-h-screen bg-[#0f172a] px-8 py-10 text-white">
 
-        <h1 className="text-4xl font-bold mb-8">
-          Contests
-        </h1>
+       <div className="mb-12">
 
-        <div className="space-y-6">
+  <h1 className="text-5xl font-bold text-white">
+    🏆 Coding Contests
+  </h1>
+
+  <p className="text-slate-400 mt-3 text-lg">
+    Compete against programmers around the world.
+  </p>
+
+</div>
+
+        <div className="10 max-w-7xl mx-auto">
 
           {contests.map((contest) => {
 
@@ -93,101 +99,166 @@ const getRemainingTime = (targetTime) => {
 
               <div
                 key={contest._id}
-                className="bg-white rounded-xl shadow p-6"
+               className="
+bg-gradient-to-br
+from-slate-800
+to-slate-900
+border
+border-slate-700
+rounded-3xl
+p-8
+shadow-xl
+hover:shadow-cyan-500/20
+hover:border-cyan-500
+transition-all
+duration-300
+"
               >
 
-                <h2 className="text-2xl font-bold">
-                  {contest.title}
-                </h2>
+               <h2 className="text-3xl font-bold text-white">
+    {contest.title}
+</h2>
+<p className="text-slate-500 mt-2">
+    👥 {contest.registeredUsers.length} Registered
+</p>
 
-                <p className="text-gray-600 mt-2">
-                  {contest.description}
-                </p>
+<p className="text-slate-400 mt-3 text-lg">
+    {contest.description}
+</p>
 
-                <div className="mt-4">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
 
-  <p>
-    <b>Status:</b>{" "}
-    <span
-      className={`font-semibold ${
-        contest.status === "Upcoming"
-          ? "text-yellow-600"
-          : contest.status === "Running"
-          ? "text-green-600"
-          : "text-red-600"
+  <div className="bg-slate-900 rounded-2xl p-5 text-center border border-cyan-500/20">
+
+    <p className="text-slate-400 text-sm">
+      Problems
+    </p>
+
+    <p className="text-cyan-400 text-2xl font-bold">
+      {contest.problems.length}
+    </p>
+
+  </div>
+
+  <div className="bg-slate-900 rounded-2xl p-5 text-center border border-purple-500/20">
+
+    <p className="text-slate-400 text-sm">
+      Duration
+    </p>
+
+    <p className="text-purple-400 text-2xl font-bold">
+      {contest.duration} min
+    </p>
+
+  </div>
+
+  <div className="bg-slate-900 rounded-2xl p-5 text-center border border-green-500/20">
+
+    <p className="text-slate-400 text-sm">
+      Status
+    </p>
+
+    <p
+      className={`text-xl font-bold ${
+        contest.status === "Running"
+          ? "text-green-400"
+          : contest.status === "Upcoming"
+          ? "text-yellow-400"
+          : "text-red-400"
       }`}
     >
       {contest.status}
-    </span>
-  </p>
+    </p>
 
-  <p>
-    <b>Problems:</b> {contest.problems.length}
-  </p>
+  </div>
 
-  <p>
-    <b>Duration:</b> {contest.duration} Minutes
-  </p>
+</div>
 
-  {/* Countdown Timer */}
+{/* Countdown */}
+
+<div className="flex justify-center mt-7">
 
   {contest.status === "Upcoming" && (
-    <p className="mt-3 text-blue-600 font-semibold">
-      Starts In: {getRemainingTime(contest.startTime)}
-    </p>
+
+    <div className="inline-flex items-center gap-2 bg-yellow-500/20 text-yellow-300 px-5 py-2 rounded-full">
+      ⏳ Starts In
+      <span className="font-bold">
+        {getRemainingTime(contest.startTime)}
+      </span>
+    </div>
+
   )}
 
   {contest.status === "Running" && (
-    <p className="mt-3 text-green-600 font-semibold">
-      Ends In: {getRemainingTime(contest.endTime)}
-    </p>
+
+    <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-5 py-2 rounded-full">
+      🚀 Ends In
+      <span className="font-bold">
+        {getRemainingTime(contest.endTime)}
+      </span>
+    </div>
+
   )}
 
   {contest.status === "Ended" && (
-    <p className="mt-3 text-red-600 font-semibold">
-      Contest Finished
-    </p>
+
+    <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-300 px-5 py-2 rounded-full">
+      🏁 Contest Finished
+    </div>
+
   )}
 
 </div>
 
-             <button
-  disabled={contest.status === "Ended"}
-  onClick={() => {
-    if (contest.status === "Upcoming") {
-      registerContest(contest._id);
-    } else if (contest.status === "Running") {
-      navigate(`/contest/${contest._id}`);
-    }
-  }}
-  className={`mt-5 px-6 py-2 rounded-lg text-white ${
-    contest.status === "Running"
-      ? "bg-green-600 hover:bg-green-700"
-      : registered
-      ? "bg-gray-500"
-      : "bg-blue-600 hover:bg-blue-700"
-  }`}
+<button
+  
+ onClick={() => {
+  if (contest.status === "Upcoming") {
+    registerContest(contest._id);
+  }
+
+  if (contest.status === "Running") {
+    navigate(`/contest/${contest._id}`);
+  }
+
+  if (contest.status === "Ended") {
+    navigate(`/contest/${contest._id}`);
+}
+}}
+  className={`
+mt-8
+w-full
+h-14
+rounded-xl
+font-semibold
+text-lg
+transition-all
+${
+  contest.status === "Running"
+    ? "bg-green-600 hover:bg-green-700"
+    : contest.status === "Upcoming"
+    ? registered
+      ? "bg-slate-600"
+      : "bg-cyan-600 hover:bg-cyan-700"
+    : "bg-orange-600 hover:bg-orange-700"
+}
+`}
 >
   {contest.status === "Upcoming"
     ? registered
-      ? "Registered ✓"
-      : "Register"
+      ? "✓ Registered"
+      : "Register Now"
     : contest.status === "Running"
-    ? "Enter Contest"
-    : "View Leaderboard"}
+    ? "🚀 Enter Contest"
+    : "🏆 View Results"}
 </button>
-
               </div>
-
             );
           })}
-
         </div>
-
       </div>
-
+      
     </>
   );
 }
-
 export default Contests;

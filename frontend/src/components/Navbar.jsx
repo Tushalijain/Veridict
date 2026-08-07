@@ -1,94 +1,139 @@
+import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/logo.png";
+import { FaCode } from "react-icons/fa6";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const location = useLocation();
+ const user = JSON.parse(localStorage.getItem("user") || "{}");
+ const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const navItem = (path, label) => (
+    <Link
+      to={path}
+      className={`px-4 py-2 rounded-xl transition-all duration-300 ${
+        location.pathname === path
+          ? "bg-blue-600 text-white"
+          : "text-slate-300 hover:bg-slate-700 hover:text-white"
+      }`}
+    >
+      {label}
+    </Link>
+  );
   const navigate = useNavigate();
-  const [showMenu, setShowMenu] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  navigate("/login");
+};
 
   return (
-    <nav className="bg-slate-800 shadow-md text-white px-8 py-4 flex justify-between items-center">
-     <Link to="/" className="flex flex-col">
-  <h1 className="text-3xl font-extrabold tracking-wide text-teal-600">
-    Veridict
-  </h1>
+    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/80 border-b border-slate-700">
 
-  <span className="text-xs text-gray-500 tracking-widest uppercase">
-    Verify. Code. Conquer.
-  </span>
-</Link>
+      <div className="max-w-[1500px] mx-auto flex items-center justify-between px-10 py-4">
 
-      <div className="flex items-center gap-6">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
 
-        <Link to="/dashboard" className="text-white hover:text-teal-300">Dashboard</Link>
+          <img
+  src={logo}
+  alt="Veridict Logo"
+  className="w-11 h-11 object-contain"
+/>
 
-        <Link to="/problems" className="text-white hover:text-teal-300">Problems</Link>
+<h1 className="text-2xl font-black tracking-wide text-white">
+  Veridict
+</h1>
 
-        <Link to="/submissions" className="text-white hover:text-teal-300">Submissions</Link>
-
-        <Link to="/leaderboard" className="text-white hover:text-teal-300">Leaderboard</Link>
-
-        <Link to="/profile" className="text-white hover:text-teal-300">Profile</Link>
-
-        <Link to="/contests" className="text-white hover:text-teal-300">Contests</Link>
-
-        {/* Profile */}
-        <div
-          className="relative cursor-pointer"
-          onClick={() => setShowMenu(!showMenu)}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center font-bold text-lg">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-semibold">
-                {user?.name}
-              </span>
-
-              <span className="text-gray-300">
-                {user?.email}
-              </span>
-            </div>
-          </div>
-
-          {showMenu && (
-            <div className="absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl text-black overflow-hidden z-50">
-
-              <div className="p-4 border-b">
-                <p className="font-semibold">{user?.name}</p>
-                <p className="text-sm text-gray-500">{user?.email}</p>
-              </div>
-
-              <Link
-                to="/submissions"
-                className="block px-4 py-3 hover:bg-gray-100"
-              >
-                📜 Submission History
-              </Link>
-
-              <button
-                onClick={logout}
-                className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600"
-              >
-                🚪 Logout
-              </button>
-
-            </div>
-          )}
         </div>
 
+        {/* Navigation */}
+
+       <div className="flex gap-2">
+
+  {navItem("/dashboard", "Dashboard")}
+  {navItem("/problems", "Problems")}
+  {navItem("/submissions", "Submissions")}
+  {navItem("/contests", "Contests")}
+  {navItem("/leaderboard", "Leaderboard")}
+  {navItem("/profile", "Profile")}
+
+</div>
+
+{/* Right Side */}
+<div className="relative">
+
+  <button
+    onClick={() => setShowProfileMenu(!showProfileMenu)}
+    className="w-10 h-10 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold"
+  >
+    {user?.name?.charAt(0)?.toUpperCase() || "U"}
+  </button>
+
+  {showProfileMenu && (
+    <div
+      className="
+        absolute
+        right-0
+        mt-3
+        w-64
+        bg-slate-900
+        border
+        border-slate-700
+        rounded-2xl
+        shadow-xl
+        overflow-hidden
+        z-50
+      "
+    >
+      <div className="px-5 py-4 border-b border-slate-700">
+        <h3 className="font-bold text-white">
+          {user?.name}
+        </h3>
+
+        <p className="text-slate-400 text-sm">
+          {user?.email}
+        </p>
       </div>
-    </nav>
+
+      <button
+        onClick={() => navigate("/profile")}
+        className="
+          w-full
+          text-left
+          px-5
+          py-3
+          hover:bg-slate-800
+          transition
+        "
+      >
+        👤 My Profile
+      </button>
+
+      <button
+        onClick={handleLogout}
+        className="
+          w-full
+          text-left
+          px-5
+          py-3
+          text-red-400
+          hover:bg-red-500/10
+          transition
+        "
+      >
+        🚪 Logout
+      </button>
+
+    </div>
+  )}
+
+</div>
+
+</div>  
+
+</nav>
   );
 }
 

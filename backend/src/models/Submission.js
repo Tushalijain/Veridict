@@ -14,7 +14,11 @@ const submissionSchema = new mongoose.Schema(
             ref: "Problem",
             required: true
         },
-
+         contest: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Contest",
+        default: null
+    },
         language: {
             type: String,
             required: true,
@@ -35,7 +39,7 @@ const submissionSchema = new mongoose.Schema(
         executionTime: {
             type: Number,
             default: 0
-        }
+        },
     },
     {
         timestamps: true

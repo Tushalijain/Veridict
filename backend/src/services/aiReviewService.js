@@ -67,11 +67,16 @@ ${code}
 
     return response.data.choices[0].message.content;
   } catch (error) {
-    console.log("OpenRouter Error:");
-    console.log(error.response?.status);
-    console.log(error.response?.data);
-    throw error;
-  }
+  console.error("OpenRouter Error:");
+
+  console.error(error.response?.data || error.message);
+
+  throw new Error(
+    error.response?.data?.error?.message ||
+    error.response?.data?.message ||
+    "AI Review failed"
+  );
+}
 };
 
 module.exports = reviewCode;

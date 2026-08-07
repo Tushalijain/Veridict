@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+:root{
+
+    --bg:#0F172A;
+    --surface:#1E293B;
+    --surface-light:#334155;
+
+    --primary:#3B82F6;
+    --secondary:#6366F1;
+
+    --success:#22C55E;
+    --warning:#F59E0B;
+    --danger:#EF4444;
+
+    --text:#F8FAFC;
+    --text2:#CBD5E1;
+
+    --border:#334155;
+
+    --shadow:
+        0 10px 30px rgba(0,0,0,.35);
+
+    --radius:18px;
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:"Inter",sans-serif;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+}
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#475569;
+    border-radius:50px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#0F172A;
+
+}
+
+.page{
+
+    min-height:100vh;
+
+    background:var(--bg);
+
+    padding:40px;
+
+}
+
+.card{
+
+    background:rgba(30,41,59,.72);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:20px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.35);
+
+    transition:.35s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.45);
+
+}
+
+.btn-primary{
+
+    background:var(--primary);
+
+    color:white;
+
+    padding:12px 22px;
+
+    border-radius:12px;
+
+    border:none;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-3px);
+
+    background:#2563EB;
+
+}
+
+.title{
+
+    font-size:40px;
+
+    font-weight:700;
+
+}
+
+.subtitle{
+
+    color:var(--text2);
+
+}
+
+.gradient{
+  background: linear-gradient(
+    90deg,
+    #3B82F6,
+    #8B5CF6
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  font-weight: 700;
+}

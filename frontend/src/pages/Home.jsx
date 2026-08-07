@@ -2,26 +2,26 @@ import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
+    <div className="min-h-screen bg-[#050816] text-white">
 
       {/* Navbar */}
-      <nav className="flex justify-end items-center px-10 py-6">
+      <nav className="flex justify-end items-center px-16 lg:px-24 py-8">
 
         <div className="flex items-center gap-5">
 
           <Link
             to="/login"
-            className="text-gray-700 hover:text-teal-600 font-medium transition duration-200"
+            className="text-slate-300 hover:text-cyan-400 font-medium transition duration-200"
           >
             Login
           </Link>
 
-          <Link
-            to="/register"
-            className="bg-teal-500 text-white px-5 py-2 rounded-lg hover:bg-teal-600 transition duration-300 shadow-md"
-          >
-            Register
-          </Link>
+         <Link
+  to="/register"
+  className="text-slate-300 hover:text-cyan-400 font-medium transition duration-200"
+>
+  Register
+</Link>
 
         </div>
 
@@ -29,49 +29,96 @@ function Home() {
 
       {/* Hero Section */}
 
-      <section className="max-w-7xl mx-auto px-8 py-24 flex flex-col items-center text-center">
+      <section
+className="
+max-w-7xl
+mx-auto
+px-8
+lg:px-20
+pt-20
+pb-20
+flex
+flex-col
+items-center
+text-center
+">
 
-        <h1 className="text-8xl md:text-8xl font-extrabold text-slate-800 tracking-tight">
+        <h1 className="text-7xl lg:text-8xl font-black">
           Veridict
         </h1>
 
-        <p className="text-2xl text-teal-600 font-semibold mt-5">
+        <p className="mt-8 text-2xl">
           Verify. Code. Conquer.
         </p>
 
-        <p className="mt-8 max-w-3xl text-gray-600 text-lg leading-8">
+        <p className="mt-10 max-w-3xl text-xl leading-9 text-slate-300">
           Practice coding challenges, compete in contests, receive AI-powered
           code reviews, and climb the leaderboard — all in one platform.
         </p>
 
-        <div className="mt-12">
+        <div className="mt-14">
 
-          <Link
-            to="/register"
-            className="bg-teal-500 hover:bg-teal-600 text-white px-12 py-5 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            Get Started
-          </Link>
+         <Link
+  to="/register"
+  className="
+  bg-gradient-to-r
+  from-cyan-500
+  via-blue-500
+  to-purple-600
+  text-white
+  px-12
+  py-5
+  rounded-xl
+  font-semibold
+  hover:scale-105
+  hover:shadow-[0_10px_35px_rgba(34,211,238,.35)]
+  transition-all
+  duration-300
+  "
+>
+  Get Started
+</Link>
 
         </div>
 
       </section>
 
+      
+
 {/* Statistics */}
 
-<section className="max-w-7xl mx-auto px-8 pb-24">
+<section
+className="
+max-w-6xl
+mx-auto
+px-8
+lg:px-20
+py-24
+">
 
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
     {/* Problems */}
 
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 text-center">
+    <div className="
+bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl
+rounded-3xl
+p-10
+hover:-translate-y-2
+hover:border-cyan-500
+hover:shadow-[0_15px_40px_rgba(0,0,0,.35)]
+transition-all
+duration-300
+text-center
+">
 
-      <h2 className="text-5xl font-extrabold text-teal-600">
+      <h2 className="text-6xl font-extrabold text-cyan-400">
         150+
       </h2>
 
-      <p className="mt-3 text-lg font-semibold text-gray-700">
+      <p className="mt-3 text-xl font-semibold text-slate-300">
         Problems
       </p>
 
@@ -79,13 +126,25 @@ function Home() {
 
     {/* Submissions */}
 
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 text-center">
-
-      <h2 className="text-5xl font-extrabold text-blue-600">
+    <div className="
+bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl
+rounded-3xl
+p-10
+hover:-translate-y-2
+hover:border-cyan-500
+hover:shadow-[0_15px_40px_rgba(0,0,0,.35)]
+transition-all
+duration-300
+text-center
+">
+      <h2 className="text-6xl font-extrabold text-blue-600">
         1000+
       </h2>
 
-      <p className="mt-3 text-lg font-semibold text-gray-700">
+      <p className="mt-3 text-xl font-semibold text-slate-300">
         Submissions
       </p>
 
@@ -93,13 +152,26 @@ function Home() {
 
     {/* Users */}
 
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 text-center">
+    <div className="
+bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl
+rounded-3xl
+p-10
+hover:-translate-y-2
+hover:border-cyan-500
+hover:shadow-[0_15px_40px_rgba(0,0,0,.35)]
+transition-all
+duration-300
+text-center
+">
 
-      <h2 className="text-5xl font-extrabold text-purple-600">
+      <h2 className="text-6xl font-extrabold text-purple-600">
         500+
       </h2>
 
-      <p className="mt-3 text-lg font-semibold text-gray-700">
+      <p className="mt-3 text-xl font-semibold text-slate-300">
         Users
       </p>
 
@@ -107,13 +179,26 @@ function Home() {
 
     {/* Contests */}
 
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 text-center">
+    <div className="
+bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl
+rounded-3xl
+p-10
+hover:-translate-y-2
+hover:border-cyan-500
+hover:shadow-[0_15px_40px_rgba(0,0,0,.35)]
+transition-all
+duration-300
+text-center
+">
 
-      <h2 className="text-5xl font-extrabold text-orange-500">
+      <h2 className="text-6xl font-extrabold text-orange-500">
         25+
       </h2>
 
-      <p className="mt-3 text-lg font-semibold text-gray-700">
+      <p className="mt-3 text-xl font-semibold text-slate-300">
         Contests
       </p>
 
@@ -125,15 +210,18 @@ function Home() {
 
 {/* Why Veridict */}
 
-<section className="bg-white py-32">
+<section className="bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl py-20">
 
-  <div className="max-w-7xl mx-auto px-8">
+  <div className="max-w-7xl mx-auto px-10 lg:px-20">
 
-    <h2 className="text-5xl font-bold text-center text-slate-800">
+    <h2 className="text-6xl font-bold text-center text-white">
       Why Veridict?
     </h2>
 
-    <p className="text-center text-gray-500 mt-4 text-lg">
+    <p className="text-center text-slate-400 mt-4 text-xl">
       Everything you need to improve your programming skills.
     </p>
 
@@ -141,15 +229,17 @@ function Home() {
 
       {/* Feature 1 */}
 
-      <div className="bg-slate-50 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
 
-        <div className="text-5xl">⚡</div>
+        <div className="text-6xl">⚡</div>
 
         <h3 className="text-2xl font-bold mt-6">
           Online Compiler
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Compile and execute Python, Java, C and C++ instantly with custom input support.
         </p>
 
@@ -157,15 +247,17 @@ function Home() {
 
       {/* Feature 2 */}
 
-      <div className="bg-slate-50 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
 
-        <div className="text-5xl">🤖</div>
+        <div className="text-6xl">🤖</div>
 
         <h3 className="text-2xl font-bold mt-6">
           AI Review
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Receive intelligent feedback to improve your code quality and logic.
         </p>
 
@@ -173,15 +265,17 @@ function Home() {
 
       {/* Feature 3 */}
 
-      <div className="bg-slate-50 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
 
-        <div className="text-5xl">🏆</div>
+        <div className="text-6xl">🏆</div>
 
         <h3 className="text-2xl font-bold mt-6">
           Coding Contests
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Participate in exciting coding contests and test your skills under pressure.
         </p>
 
@@ -189,15 +283,17 @@ function Home() {
 
       {/* Feature 4 */}
 
-      <div className="bg-slate-50 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700 rounded-2xl p-8 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
 
-        <div className="text-5xl">📈</div>
+        <div className="text-6xl">📈</div>
 
         <h3 className="text-2xl font-bold mt-6">
           Leaderboard
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Compete with other developers and climb the rankings through consistent practice.
         </p>
 
@@ -211,15 +307,15 @@ function Home() {
 
 {/* How It Works */}
 
-<section className="py-32 bg-gradient-to-r from-slate-50 to-teal-50">
+<section className="py-20 bg-gradient-to-r from-[#050816] to-[#08111F]">
 
-  <div className="max-w-7xl mx-auto px-8">
+  <div className="max-w-7xl mx-auto px-10 lg:px-20">
 
-    <h2 className="text-5xl font-bold text-center text-slate-800">
+    <h2 className="text-6xl font-bold text-center text-white">
       How It Works
     </h2>
 
-    <p className="text-center text-gray-500 mt-4 text-lg">
+    <p className="text-center text-gray-500 mt-4 text-xl">
       Start coding in just three simple steps.
     </p>
 
@@ -227,9 +323,13 @@ function Home() {
 
       {/* Step 1 */}
 
-      <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl rounded-2xl shadow-xl
+hover:border-cyan-500 p-8 text-center hover:shadow-xl transition duration-300">
 
-        <div className="w-16 h-16 rounded-full bg-teal-500 text-white flex items-center justify-center text-2xl font-bold mx-auto">
+        <div className="w-16 h-16 rounded-full bg-cyan-500 text-white flex items-center justify-center text-2xl font-bold mx-auto">
           1
         </div>
 
@@ -237,7 +337,7 @@ function Home() {
           Register
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Create your free Veridict account and start your coding journey.
         </p>
 
@@ -245,7 +345,11 @@ function Home() {
 
       {/* Step 2 */}
 
-      <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl rounded-2xl shadow-xl
+hover:border-cyan-500 p-8 text-center hover:shadow-xl transition duration-300">
 
         <div className="w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl font-bold mx-auto">
           2
@@ -255,7 +359,7 @@ function Home() {
           Solve Problems
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Practice algorithmic challenges and improve your programming skills.
         </p>
 
@@ -263,7 +367,11 @@ function Home() {
 
       {/* Step 3 */}
 
-      <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300">
+      <div className="bg-slate-900/70
+border
+border-slate-700
+backdrop-blur-xl rounded-2xl shadow-xl
+hover:border-cyan-500 p-8 text-center hover:shadow-xl transition duration-300">
 
         <div className="w-16 h-16 rounded-full bg-purple-500 text-white flex items-center justify-center text-2xl font-bold mx-auto">
           3
@@ -273,7 +381,7 @@ function Home() {
           Grow
         </h3>
 
-        <p className="text-gray-600 mt-4">
+        <p className="text-slate-400 mt-4">
           Receive AI feedback, participate in contests, and climb the leaderboard.
         </p>
 
@@ -287,9 +395,9 @@ function Home() {
 
 {/* Footer */}
 
-<footer className="bg-slate-900 text-white py-16">
+<footer className="bg-slate-900 text-white py-10">
 
-  <div className="max-w-7xl mx-auto px-8">
+  <div className="max-w-7xl mx-auto px-10 lg:px-20">
 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 
@@ -297,7 +405,7 @@ function Home() {
 
       <div>
 
-        <h2 className="text-3xl font-bold text-teal-400">
+        <h2 className="text-3xl font-bold text-cyan-400">
           Veridict
         </h2>
 
@@ -321,14 +429,14 @@ function Home() {
 
           <Link
             to="/login"
-            className="text-gray-400 hover:text-teal-400"
+            className="text-gray-400 hover:text-cyan-400"
           >
             Login
           </Link>
 
           <Link
             to="/register"
-            className="text-gray-400 hover:text-teal-400"
+            className="text-gray-400 hover:text-cyan-400"
           >
             Register
           </Link>
@@ -347,7 +455,7 @@ function Home() {
 
         <a
   href="mailto:youremail@gmail.com"
-  className="text-gray-400 hover:text-teal-400 block"
+  className="text-gray-400 hover:text-cyan-400 block"
 >
   📧 tushalijain1234@gmail.com
 </a>
@@ -356,7 +464,7 @@ function Home() {
   href="https://github.com/Tushalijain"
   target="_blank"
   rel="noopener noreferrer"
-  className="text-gray-400 hover:text-teal-400 block mt-2"
+  className="text-gray-400 hover:text-cyan-400 block mt-2"
 >
   👤 GitHub Profile
 </a>
@@ -365,7 +473,7 @@ function Home() {
   href="https://github.com/Tushalijain/Online_Judge_Project"
   target="_blank"
   rel="noopener noreferrer"
-  className="text-gray-400 hover:text-teal-400 block mt-2"
+  className="text-gray-400 hover:text-cyan-400 block mt-2"
 >
   💻 View Project
 </a>

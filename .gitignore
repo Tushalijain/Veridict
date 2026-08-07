@@ -1,8 +1,15 @@
 node_modules/
 .env
+
 __pycache__/
 *.pyc
+
 src/temp/codes/*
 src/temp/outputs/*
 !src/temp/codes/.gitkeep
 !src/temp/outputs/.gitkeep
+
+backend/src/temp/
+
+src/config/firebase-service-account.json
+backend/src/config/firebase-service-account.json

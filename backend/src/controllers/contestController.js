@@ -85,6 +85,17 @@ const registerContest = async (req, res) => {
     }
 
     contest.registeredUsers.push(userId);
+    const User = require("../models/User");
+
+const user = await User.findById(userId);
+
+if (
+    user &&
+    !user.badges.includes("Contest Participant")
+) {
+    user.badges.push("Contest Participant");
+    await user.save();
+}
 
     await contest.save();
 
@@ -103,31 +114,23 @@ const registerContest = async (req, res) => {
   }
 };
 
-
-
 const getContestById = async (req, res) => {
   try {
 
-    const contest = await Contest.findById(req.params.contestId)
-      .populate("problems");
+    const contest = await Contest.findById(req.params.id).populate(
+  "problems"
+);
 
-    if (!contest) {
-      return res.status(404).json({
-        message: "Contest not found",
-      });
-    }
-    const now = new Date();
+const now = new Date();
 
 if (now < contest.startTime) {
     contest.status = "Upcoming";
-}
-else if (now >= contest.startTime && now <= contest.endTime) {
+} else if (now > contest.endTime) {
+    contest.status = "Ended";
+} else {
     contest.status = "Running";
 }
-else {
-    contest.status = "Ended";
-}
-
+await contest.save();
     res.json({
       success: true,
       contest,

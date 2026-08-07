@@ -1,63 +1,101 @@
 const TestCase = require("../models/TestCase");
 
-//create test case
+// Create Test Case
 const createTestCase = async (req, res) => {
   try {
     const testCase = await TestCase.create(req.body);
+
     res.status(201).json(testCase);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//get all test cases
+// Get All Test Cases
 const getTestCases = async (req, res) => {
   try {
     const testCases = await TestCase.find();
-    res.json(testCases);
+
+    res.status(200).json(testCases);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//get individual
+// Get Test Case By ID
 const getTestCaseById = async (req, res) => {
   try {
     const testCase = await TestCase.findById(req.params.id);
 
     if (!testCase) {
-      return res.status(404).json({ message: "Test case not found" });
+      return res.status(404).json({
+        message: "Test case not found",
+      });
     }
 
-    res.json(testCase);
+    res.status(200).json(testCase);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//update testcase
+// Update Test Case
 const updateTestCase = async (req, res) => {
   try {
     const testCase = await TestCase.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
-    res.json(testCase);
+    if (!testCase) {
+      return res.status(404).json({
+        message: "Test case not found",
+      });
+    }
+
+    res.status(200).json(testCase);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//delete
+// Delete Test Case
 const deleteTestCase = async (req, res) => {
   try {
-    await TestCase.findByIdAndDelete(req.params.id);
-    res.json({ message: "Test case deleted" });
+    const testCase = await TestCase.findByIdAndDelete(req.params.id);
+
+    if (!testCase) {
+      return res.status(404).json({
+        message: "Test case not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Test case deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-module.exports = {createTestCase, getTestCases, getTestCaseById, updateTestCase, deleteTestCase};
+module.exports = {
+  createTestCase,
+  getTestCases,
+  getTestCaseById,
+  updateTestCase,
+  deleteTestCase,
+};

@@ -52,6 +52,20 @@ const getProfile = async (req, res) => {
         ? 0
         : ((accepted / totalSubmissions) * 100).toFixed(2);
 
+        // Generate Heatmap Data
+const heatmap = {};
+
+submissions.forEach((submission) => {
+  if (submission.verdict === "Accepted") {
+
+    const date = submission.createdAt
+      .toISOString()
+      .split("T")[0];
+
+    heatmap[date] = (heatmap[date] || 0) + 1;
+  }
+});
+
     res.json({
       success: true,
       user,
@@ -64,6 +78,7 @@ const getProfile = async (req, res) => {
         runtimeError,
         timeLimitExceeded,
         acceptanceRate,
+        heatmap,
       },
     });
   } catch (error) {

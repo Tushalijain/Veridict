@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
 const {createTestCase, getTestCases, getTestCaseById, updateTestCase, deleteTestCase} = require("../controllers/testCaseController");
-
 router.post("/", createTestCase);
 router.get("/", getTestCases);
 router.get("/:id", getTestCaseById);

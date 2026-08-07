@@ -14,8 +14,6 @@ import ContestArena from "../pages/ContestArena";
 import NotFound from "../pages/NotFound";
 
 
-
-
 function AppRoutes() {
   return (
     <BrowserRouter>

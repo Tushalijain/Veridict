@@ -2,8 +2,11 @@ const reviewCode = require("../services/aiReviewService");
 
 const getCodeReview = async (req, res) => {
   try {
+    console.log("✅ AI Review API hit");
     const { language, code } = req.body;
-
+    console.log(language);
+console.log(code);
+   
     if (!language || !code) {
       return res.status(400).json({
         success: false,
@@ -27,7 +30,6 @@ const getCodeReview = async (req, res) => {
     });
   }
 };
-
 module.exports = {
   getCodeReview,
 };

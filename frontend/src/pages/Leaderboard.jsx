@@ -23,31 +23,74 @@ function Leaderboard() {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gray-100 p-8">
+      <div className="min-h-screen bg-[#050816] text-white">
+        <div className="max-w-7xl mx-auto px-8 lg:px-20 py-12">
 
-        <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold">
-                🏆 Global Leaderboard
-            </h1>
+        <div className="text-center mb-12">
 
-            <p className="text-gray-500 mt-2">
-                Top 10 Programmers
-            </p>
-         </div>
+    <h1 className="text-5xl font-black">
+        🏆 Global Leaderboard
+    </h1>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+    <p className="text-slate-400 mt-4 text-lg">
+        Top 10 Programmers
+    </p>
 
-          <table className="w-full divide-y divide-gray-200">
+</div>
 
-            <thead className="bg-gray-200">
+        <div
+className="
+bg-slate-900/70
+border
+border-slate-700
+rounded-2xl
+backdrop-blur-xl
+overflow-hidden
+">
+
+          <table className="w-full">
+
+            <thead className="bg-slate-900 border-b border-slate-700">
 
               <tr>
-                <th className="p-4">Rank</th>
+                <th className="
+px-6
+py-4
+text-slate-400
+uppercase
+tracking-wider
+text-sm
+font-semibold
+">Rank</th>
                 <th className="p-4 text-left">User</th>
-                <th className="p-4">Solved</th>
-                <th className="p-4">Submissions</th>
-                <th className="p-4">Points</th>
-                <th className="p-4">Accuracy</th>
+                <th className="
+px-6
+py-4
+text-slate-400
+uppercase
+tracking-wider
+text-sm
+font-semibold
+">Solved</th>
+                <th className="
+px-6
+py-4
+text-slate-400
+uppercase
+tracking-wider
+text-sm
+font-semibold
+">Submissions</th>
+                <th className="
+px-6
+py-4
+text-slate-400
+uppercase
+tracking-wider
+text-sm
+font-semibold
+">Points</th>
+              
               </tr>
 
             </thead>
@@ -58,17 +101,18 @@ function Leaderboard() {
 
                 <tr
                     key={user._id}
-                    className={`border-t transition ${
+                    className={`border-b border-slate-700 transition-all duration-300
+                        ${
                         currentUser?._id === user.user._id
-                        ? "bg-blue-100"
+                        ? "bg-cyan-500/10 border-cyan-500"
                         : index === 0
-                        ? "bg-yellow-100"
+                        ? "bg-yellow-500/10"
                         : index === 1
-                        ? "bg-gray-100"
+                        ? "bg-slate-500/10"
                         : index === 2
-                        ? "bg-orange-100"
-                        : "hover:bg-gray-50"
-                    }`}
+                        ? "bg-orange-500/10"
+                        : "hover:bg-slate-800/60"
+                        }`}
                  >
 
                   <td className="p-4 text-center text-2xl font-bold">
@@ -83,44 +127,50 @@ function Leaderboard() {
                     )}
                   </td>
 
-                  <td className="p-4">
-                    <div className="font-bold text-lg">
+                  <td className="
+px-6
+py-4
+text-slate-400
+uppercase
+tracking-wider
+text-sm
+font-semibold
+">
+                    <div className="font-bold text-lg text-white">
                       {user.user.name}
                     </div>
 
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-slate-400">
                       {user.user.email}
                     </div>
                   </td>
 
-                 <td className="p-4 text-center font-bold text-green-600">
+                 <td className="px-6 py-5 text-center font-bold text-green-400">
                     {user.solved}
                 </td>
 
-                  
-
-                 <td className="p-4 text-center text-gray-700">
+                 <td className="px-6 py-5 text-center text-slate-300">
                     {user.totalSubmissions}
                  </td>
 
                   <td className="p-4 text-center">
-                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full font-bold">
+                    <span
+className="
+bg-gradient-to-r
+from-cyan-500
+to-purple-600
+text-white
+px-4
+py-1.5
+rounded-full
+font-bold
+shadow-lg
+">
                         ⭐ {user.points} pts
                     </span>
                   </td>
-                 
 
-                  <td
-                    className={`p-4 text-center font-bold ${
-                        user.accuracy >= 80
-                        ? "text-green-600"
-                        : user.accuracy >= 50
-                        ? "text-yellow-600"
-                        : "text-red-600"
-                    }`}
-                    >
-                    {user.accuracy}%
-                 </td>
+                
 
                 </tr>
 
@@ -133,7 +183,7 @@ function Leaderboard() {
         </div>
 
       </div>
-
+</div>
     </>
   );
 }

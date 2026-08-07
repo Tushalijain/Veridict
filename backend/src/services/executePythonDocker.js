@@ -44,8 +44,9 @@ const executePythonDocker = (filePath, input = "") => {
     });
 
     docker.stderr.on("data", (data) => {
-      error += data.toString();
-    });
+    console.log("PYTHON STDERR:", data.toString());
+    error += data.toString();
+});
 
    docker.on("error", (err) => {
     reject({
@@ -55,6 +56,11 @@ const executePythonDocker = (filePath, input = "") => {
 });
 
 docker.on("close", (code) => {
+
+    console.log("Docker Exit Code:", code);
+    console.log("Docker STDOUT:", JSON.stringify(output));
+    console.log("Docker STDERR:", JSON.stringify(error));
+
     if (code === 0) {
         resolve(output);
     } else {
@@ -63,6 +69,7 @@ docker.on("close", (code) => {
             message: error || "Execution Failed"
         });
     }
+
 });
 
   });
