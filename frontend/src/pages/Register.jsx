@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Button from "../components/Button";
 import { HiEye, HiEyeSlash } from "react-icons/hi2";
-import { FcGoogle } from "react-icons/fc";
+
 import axios from "axios";
 
 function Register() {
@@ -37,34 +37,38 @@ function Register() {
   const cleanEmail = email.trim().toLowerCase();
 
   try {
-    const response = await api.post("/auth/register", {
-      name: name.trim(),
-      email: cleanEmail,
-      password,
-    });
+  const response = await api.post("/auth/register", {
+    name: name.trim(),
+    email: cleanEmail,
+    password,
+  });
 
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
-    }
+  if (!response.data.token) {
+    alert("Registration succeeded, but authentication failed.");
+    return;
+  }
 
-    if (response.data.user) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-      );
-    }
+  localStorage.setItem("token", response.data.token);
 
-    alert("Registration Successful!");
-
-    navigate("/dashboard");
-  } catch (error) {
-    console.error("Registration error:", error);
-
-    alert(
-      error.response?.data?.message ||
-      "Registration Failed"
+  if (response.data.user) {
+    localStorage.setItem(
+      "user",
+      JSON.stringify(response.data.user)
     );
   }
+
+  alert("Registration Successful!");
+
+  navigate("/dashboard");
+
+} catch (error) {
+  console.error("Registration error:", error);
+
+  alert(
+    error.response?.data?.message ||
+    "Registration Failed"
+  );
+}
 };
 
   return (

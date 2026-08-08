@@ -1,54 +1,87 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const register = async (req,res)=> {
-    try{
-       const{name,email,password} = req.body;
-       if (!name || !email || !password ) {
-            return res.status(400).json({
-                message: "All fields are required"
-            });
-        }
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(409).json({
-                message: "User already exists"
-            });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-      const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-});
+//const crypto = require("crypto");
+const register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
 
-        user.password = undefined;
-
-        return res.status(201).json({
-            message: "User registered successfully",
-            user
-        });
-
-    }catch(error){
-        return res.status(500).json({
-            message: error.message
-        });
-    
+    // Backend validation
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "All fields are required"
+      });
     }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check existing user
+    const existingUser = await User.findOne({
+      email: cleanEmail
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: "User already exists"
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    const user = await User.create({
+      name: name.trim(),
+      email: cleanEmail,
+      password: hashedPassword
+    });
+
+    // Generate JWT
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d"
+      }
+    );
+
+    // Don't send password to frontend
+    user.password = undefined;
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user
+    });
+
+  } catch (error) {
+    console.error("Registration error:", error);
+
+    return res.status(500).json({
+      message: error.message
+    });
+  }
 };
 
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({
-                message: "Email and password are required"
-            });
-        }
+if (!email || !password) {
+  return res.status(400).json({
+    message: "Email and password are required"
+  });
+}
 
-        const user = await User.findOne({ email });
+const cleanEmail = email.trim().toLowerCase();
+
+const user = await User.findOne({
+  email: cleanEmail
+});
 
         if (!user) {
             return res.status(404).json({
@@ -91,67 +124,6 @@ const login = async (req, res) => {
     }
 };
 
-const googleLogin = async (req, res) => {
-    try {
-
-        const { idToken } = req.body;
-
-        if (!idToken) {
-            return res.status(400).json({
-                message: "ID Token is required"
-            });
-        }
-
-        const decodedToken = await getAuth().verifyIdToken(idToken);
-
-        const { email, name } = decodedToken;
-
-        let user = await User.findOne({ email });
-
-        if (!user) {
-
-            const randomPassword =
-                crypto.randomBytes(32).toString("hex");
-
-            const hashedPassword =
-                await bcrypt.hash(randomPassword, 10);
-
-            user = await User.create({
-                name,
-                email,
-                password: hashedPassword
-            });
-        }
-
-        const token = jwt.sign(
-            {
-                userId: user._id,
-                email: user.email,
-                role: user.role
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "1d"
-            }
-        );
-
-        user.password = undefined;
-
-        return res.status(200).json({
-            message: "Google Login Successful",
-            token,
-            user
-        });
-
-    }
-    catch (error) {
-
-        return res.status(500).json({
-            message: error.message
-        });
-
-    }
-};
 module.exports = {
     register,
     login

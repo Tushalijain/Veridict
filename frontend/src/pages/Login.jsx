@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Button from "../components/Button";
 import { HiEye, HiEyeSlash } from "react-icons/hi2";
-import { FcGoogle } from "react-icons/fc";
+
 import axios from "axios";
 
 function Login() {
