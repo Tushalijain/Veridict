@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import api from "../services/api";
-
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
 import { FaRobot } from "react-icons/fa";
@@ -42,11 +41,15 @@ const templates = {
 function ProblemDetails() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-
   const contestId = searchParams.get("contest");
  console.log("Current URL:", window.location.href);
 console.log("Contest ID:", contestId);
-  const getStorageKey = (language) => `problem_${id}_${language}`;
+const getStorageKey = (language) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?._id;
+
+  return `problem_${userId}_${id}_${language}`;
+};
   const [problem, setProblem] = useState(null);
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState("");
@@ -58,7 +61,6 @@ console.log("Contest ID:", contestId);
  const [submissionResult, setSubmissionResult] = useState(null);
   const [review, setReview] = useState("");
   const [reviewing, setReviewing] = useState(false);
-
 
  useEffect(() => {
   console.log("submissionResult changed:", submissionResult);
@@ -240,17 +242,13 @@ const getDifficultyColor = () => {
       return "bg-gray-100 text-gray-700";
   }
 };
-
   if (!problem) {
   return <h2 className="text-center mt-10">Loading...</h2>;
 }
-
 const example = problem.examples?.[selectedExample];
 
   return (
   <>
-    
-
     <div className="min-h-screen bg-[#050816] text-white">
   <div className="max-w-[1600px] mx-auto px-8 lg:px-20 py-10">
 
@@ -267,19 +265,15 @@ p-8
 h-[86vh]
 overflow-y-auto
 ">
-
           <h1 className="text-5xl font-black mb-8">
             {problem.title}
           </h1>
-
           <h2 className="text-xl font-semibold mb-2">
             Problem Statement
           </h2>
-
           <p className="mb-8 text-slate-300 leading-8">
             {problem.statement}
           </p>
-
           <h2 className="text-xl font-bold text-cyan-400 mb-3">
   Difficulty
 </h2>
@@ -300,7 +294,6 @@ problem.difficulty==="Easy"
           <h2 className="text-xl font-semibold mb-2">
             Constraints
           </h2>
-
           <p className="text-slate-300 leading-8">
             {problem.constraints}
           </p>
@@ -334,7 +327,6 @@ bg-slate-900/40
 ">
 
   <h3 className="font-semibold">Input</h3>
-
   <pre className="
 bg-[#0F172A]
 border
@@ -364,15 +356,11 @@ overflow-x-auto
 ">
     {example?.output}
   </pre>
-
   <h3 className="font-semibold mt-4">Explanation</h3>
-
   <p className="mt-3 text-slate-300 leading-7">
     {example?.explanation}
   </p>
-
 </div>
-
         </div>
 
         {/* RIGHT PANEL */}
@@ -396,18 +384,14 @@ text-lg
 ">
             Language
           </label>
-
           <select
             value={language}
            onChange={(e) => {
               const selectedLanguage = e.target.value;
-
               setLanguage(selectedLanguage);
-
               const savedCode = localStorage.getItem(
                 getStorageKey(selectedLanguage)
               );
-
               if (savedCode) {
                 setCode(savedCode);
               } else {
@@ -461,13 +445,11 @@ transition
           />
        </div>
         </div>
-
       </div>
 
  <div className="grid grid-cols-2 gap-6 mt-6">
 
   {/* Custom Input */}
-
   <div className="
 bg-slate-900/70
 border
@@ -501,11 +483,9 @@ resize-none
 "
       placeholder="Enter custom input..."
     />
-
   </div>
 
   {/* Output */}
-
   <div className="
 bg-slate-900/70
 border
@@ -535,7 +515,6 @@ ${getVerdictColor()}
       <h3 className="text-2xl font-bold mb-4">
         {output.split("\n")[0]}
       </h3>
-
       <pre className="whitespace-pre-wrap">
         {output.split("\n").slice(1).join("\n")}
       </pre>
@@ -546,9 +525,7 @@ ${getVerdictColor()}
     </p>
   )}
 </div>
-
   </div>
-
 </div>
 
 {submissionResult && (
@@ -565,7 +542,6 @@ mt-8
     <h2 className="text-3xl font-black mb-6">
       Submission Result
     </h2>
-
     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
 
       <div>
@@ -606,7 +582,6 @@ mt-8
 
   </div>
 )}
-
 <div className="flex justify-end gap-4 mt-6">
 
   <button
@@ -645,10 +620,6 @@ mt-8
   <FaRobot className="text-lg" />
   {reviewing ? "Reviewing..." : "AI Review"}
 </button>
-
-  
-
-
 </div>
 {review && (
   <div
@@ -662,11 +633,9 @@ mt-8
     p-8
     "
   >
-
     <h2 className="text-3xl font-black text-purple-400 mb-6">
       🤖 AI Code Review
     </h2>
-
     <div
       className="
       prose
@@ -683,14 +652,11 @@ mt-8
     >
       <ReactMarkdown>{review}</ReactMarkdown>
     </div>
-
   </div>
 )}
 </div>
 </div>
-    
   </>
 );
 }
-
 export default ProblemDetails;

@@ -4,15 +4,11 @@ const TestCase = require("../models/TestCase");
 const User = require("../models/User");
 const Contest = require("../models/Contest");
 const ContestSubmission = require("../models/ContestSubmission");
-
 const judgeService = require("../services/judgeService");
 
 const createSubmission = async (req, res) => {
     try {
         const {userId, problemId, contestId,language, code,} = req.body;
-        // Check if this problem belongs to a contest
-
-
     let contest = null;
 
 if (contestId) {
@@ -287,25 +283,32 @@ if (
 };
 
 const getSubmissions = async (req, res) => {
-    try {
-        const submissions = await Submission.find()
-            .populate("user", "name email")
-            .populate("problem", "title");
+  try {
+    const userId = req.user.userId;
 
-        return res.status(200).json(submissions);
+    const submissions = await Submission.find({
+      user: userId
+    })
+      .populate("user", "name email")
+      .populate("problem", "title")
+      .sort({ createdAt: -1 });
 
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message
-        });
-    }
+    return res.status(200).json(submissions);
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message
+    });
+  }
 };
 
 const getUserSubmissions = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.userId;
 
-    const submissions = await Submission.find({ user: userId })
+    const submissions = await Submission.find({
+      user: userId
+    })
       .populate("problem", "title")
       .sort({ createdAt: -1 });
 

@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
-
-
 function Problems() {
   const [problems, setProblems] = useState([]);
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("All");
-
   useEffect(() => {
     fetchProblems();
   }, []);
-
   const fetchProblems = async () => {
     try {
       const response = await api.get("/problems");
@@ -23,22 +19,16 @@ function Problems() {
 
   return (
      <>
-    
     <div className="min-h-screen bg-[#050816] text-white">
   <div className="max-w-7xl mx-auto px-8 lg:px-20 py-12">
-
      <div className="mb-10">
-
   <h1 className="text-5xl font-black">
     Problems
   </h1>
-
   <p className="text-slate-400 mt-3">
     Sharpen your skills by solving coding challenges.
   </p>
-
 </div>
-
      <div className="flex flex-col md:flex-row gap-4 mb-6">
 
   <input
@@ -63,7 +53,6 @@ outline-none
 transition
 "
   />
-
   <select
     value={difficulty}
     onChange={(e) => setDifficulty(e.target.value)}
@@ -86,7 +75,6 @@ transition
     <option value="Medium">Medium</option>
     <option value="Hard">Hard</option>
   </select>
-
 </div>
 
       <div className="space-y-4">
@@ -113,7 +101,6 @@ transition-all
 duration-300
 "
           >
-
             <div>
               <h2 className="text-xl font-bold">
                 {problem.title}
@@ -153,17 +140,12 @@ duration-300
             >
               Solve
             </Link>
-
           </div>
-
         ))}
-
       </div>
-
     </div>
     </div>
     </>
   );
 }
-
 export default Problems;
