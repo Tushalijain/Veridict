@@ -19,8 +19,9 @@ function AppContent() {
   const location = useLocation();
 
   const hideNavbar =
-    location.pathname === "/login" ||
-    location.pathname === "/register";
+  location.pathname === "/" ||
+  location.pathname === "/login" ||
+  location.pathname === "/register";
 
   return (
     <>
