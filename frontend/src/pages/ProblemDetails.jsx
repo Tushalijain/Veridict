@@ -137,8 +137,8 @@ const submitCode = async () => {
       setOutput("Please login first.");
       return;
     }
-
-    const response = await api.post("/submissions", {
+console.log("Token before submit:", localStorage.getItem("token"));
+ const response = await api.post("/submissions", {
   userId: user._id,
   problemId: id,
   contestId,
