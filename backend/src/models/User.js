@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -27,7 +26,6 @@ const userSchema = new mongoose.Schema(
     },
 
     // ===== STREAK SYSTEM =====
-
     currentStreak: {
       type: Number,
       default: 0,
@@ -64,7 +62,5 @@ badges: [
     timestamps: true,
   }
 );
-
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;

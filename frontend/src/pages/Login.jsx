@@ -4,45 +4,13 @@ import api from "../services/api";
 import Button from "../components/Button";
 import { HiEye, HiEyeSlash } from "react-icons/hi2";
 import { FcGoogle } from "react-icons/fc";
-
 import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
-
-// const handleGoogleLogin = async () => {
-//   try {
-//     const user = await googleLogin();
-
-//     const idToken = await user.getIdToken();
-
-//    const response = await axios.post(
-//   `${import.meta.env.VITE_API_URL}/auth/google`,
-//   {
-//     idToken,
-//   }
-// );
-
-//     console.log(response.data);
-
-//     // save JWT
-//     localStorage.setItem(
-//       "token",
-//       response.data.token
-//     );
-
-//     // redirect after login
-//     navigate("/dashboard");
-
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -53,7 +21,7 @@ function Login() {
 
     try {
       const response = await api.post("/auth/login", {
-        email,
+        email: email.trim().toLowerCase(),
         password,
       });
 
@@ -202,33 +170,17 @@ py-8
     </Button>
   </div>
 </form>
-
-        
+   
         {/* Divider */}
 <div className="flex items-center gap-4 mt-8 mb-6">
   <div className="flex-1 h-px bg-slate-700"></div>
 
-  
-
   <div className="flex-1 h-px bg-slate-700"></div>
 </div>
 
-
-{/* Google Sign In */}
-{/* <Button
-  type="button"
-  variant="secondary"
-  onClick={handleGoogleLogin}
->
-   <FcGoogle className="text-xl" />
-  Continue with Google
-</Button> */}
-
 {/* Register */}
-
 <p className="text-center text-sm text-slate-400 mt-6">
   Don't have an account?
-
   <button
     onClick={() => navigate("/register")}
     className="ml-2 font-semibold text-cyan-400 hover:text-cyan-300"
@@ -240,5 +192,4 @@ py-8
     </div>
   );
 }
-
 export default Login;

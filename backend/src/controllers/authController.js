@@ -1,8 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// require("../config/firebaseAdmin");
-// const { getAuth } = require("firebase-admin/auth");
 const crypto = require("crypto");
 const register = async (req,res)=> {
     try{
@@ -19,11 +17,10 @@ const register = async (req,res)=> {
             });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        user = await User.create({
+      const user = await User.create({
     name,
     email,
     password: hashedPassword,
-    provider: "google"
 });
 
         user.password = undefined;
@@ -155,7 +152,6 @@ const googleLogin = async (req, res) => {
 
     }
 };
-
 module.exports = {
     register,
     login
