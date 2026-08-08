@@ -3,86 +3,81 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Button from "../components/Button";
 import { HiEye, HiEyeSlash } from "react-icons/hi2";
-
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 
 function Register() {
   const navigate = useNavigate();
-
- 
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleRegister = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !confirmPassword
-    ) {
-      alert("Please fill all fields");
-      return;
+  if (
+    !name.trim() ||
+    !email.trim() ||
+    !password ||
+    !confirmPassword
+  ) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  // Put it here
+  const cleanEmail = email.trim().toLowerCase();
+
+  try {
+    const response = await api.post("/auth/register", {
+      name: name.trim(),
+      email: cleanEmail,
+      password,
+    });
+
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
     }
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-
-    try {
-      const response = await api.post("/auth/register", {
-        name,
-        email,
-        password,
-      });
-
-      localStorage.setItem(
-        "token",
-        response.data.token
-      );
-
+    if (response.data.user) {
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
-
-      alert("Registration Successful!");
-
-      navigate("/dashboard");
-    } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Registration Failed"
-      );
     }
-  };
+
+    alert("Registration Successful!");
+
+    navigate("/dashboard");
+  } catch (error) {
+    console.error("Registration error:", error);
+
+    alert(
+      error.response?.data?.message ||
+      "Registration Failed"
+    );
+  }
+};
 
   return (
     <div className="min-h-[92vh] bg-[#050816] relative overflow-hidden flex items-center justify-center py-8">
 
       {/* Background Glow */}
-
       <div className="absolute inset-0 overflow-hidden">
-
         <div className="absolute -top-52 -right-52 w-[520px] h-[520px] bg-cyan-500/20 blur-[160px] rounded-full"></div>
-
         <div className="absolute -bottom-52 -left-52 w-[520px] h-[520px] bg-purple-600/20 blur-[160px] rounded-full"></div>
 
       </div>
 
       {/* Card */}
-
       <div
 className="
 relative
@@ -97,21 +92,19 @@ px-8
 py-8
 "
 >
-
         <h1 className="text-4xl font-bold text-center text-white mb-3">
           Create Account
         </h1>
-
         <p className="text-center text-slate-400 mt-3 mb-10">
           Join Veridict and start your coding journey.
         </p>
-
-       <form className="space-y-5">
+       <form
+  onSubmit={handleRegister}
+  className="space-y-5"
+>
 
           {/* Full Name */}
-
           <div>
-
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Full Name
             </label>
@@ -141,13 +134,10 @@ py-8
               "
             />
             </div>
-
           </div>
 
           {/* Email */}
-
           <div>
-
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Email
             </label>
@@ -177,13 +167,10 @@ py-8
               "
             />
             </div>
-
           </div>
 
                     {/* Password */}
-
           <div>
-
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Password
             </label>
@@ -230,15 +217,12 @@ py-8
                   <HiEye size={20} />
                 )}
               </button>
-
             </div>
-
           </div>
 
           {/* Confirm Password */}
 
           <div>
-
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Confirm Password
             </label>
@@ -293,53 +277,29 @@ py-8
                   <HiEye size={20} />
                 )}
               </button>
-
             </div>
-
           </div>
 
           {/* Create Account Button */}
-
           <div className="px-2 pt-2">
-
             <Button type="submit">
               Create Account
             </Button>
-
           </div>
-
         </form>
 
         {/* Divider */}
 
         <div className="flex items-center gap-4 my-8">
-
           <div className="flex-1 h-px bg-slate-700"></div>
-
-          
-
           <div className="flex-1 h-px bg-slate-700"></div>
 
         </div>
 
-        {/* Google Button */}
-{/* <div className="px-2 pt-2">
-       <Button
-  type="button"
-  variant="secondary"
-  onClick={handleGoogleRegister}
->
-  <FcGoogle className="text-xl" />
-  Sign up with Google
-</Button>
-        </div> */}
-
                 {/* Login */}
 
         <p className="text-center text-sm text-slate-400 mt-8">
-
           Already have an account?
-
           <button
             type="button"
             onClick={() => navigate("/login")}
@@ -353,14 +313,9 @@ py-8
           >
             Sign In
           </button>
-
         </p>
-
       </div>
-
     </div>
-
   );
 }
-
 export default Register;
