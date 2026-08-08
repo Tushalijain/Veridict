@@ -1,11 +1,12 @@
+const fs = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
+
 const cleanupFiles = require("../utils/cleanupFiles");
 const VERDICTS = require("../constants/verdicts");
 
 const executeCpp = (filePath, input = "") => {
   const dir = path.dirname(filePath);
-  const fileName = path.basename(filePath);
 
   const executable =
     process.platform === "win32" ? "Main.exe" : "Main";
@@ -14,16 +15,28 @@ const executeCpp = (filePath, input = "") => {
 
   return new Promise((resolve, reject) => {
 
+    // Make sure generated C++ file actually exists
+    if (!fs.existsSync(filePath)) {
+      return reject({
+        type: VERDICTS.COMPILATION_ERROR,
+        message: `C++ source file not found: ${filePath}`,
+      });
+    }
+
+    console.log("===== C++ EXECUTION =====");
+    console.log("Source file:", filePath);
+    console.log("Source exists:", fs.existsSync(filePath));
+    console.log("Executable:", executablePath);
+
     // =========================
     // COMPILE C++
     // =========================
-    const compile = spawn(
-      "g++",
-      [fileName, "-o", executable],
-      {
-        cwd: dir,
-      }
-    );
+
+    const compile = spawn("g++", [
+      filePath,
+      "-o",
+      executablePath,
+    ]);
 
     let compileError = "";
 
@@ -31,32 +44,43 @@ const executeCpp = (filePath, input = "") => {
       compileError += data.toString();
     });
 
-    // Important: handles g++ not found / spawn failure
     compile.on("error", (error) => {
       cleanupFiles(filePath, executablePath);
 
       reject({
         type: VERDICTS.COMPILATION_ERROR,
-        message: error.message || "Failed to start C++ compiler.",
+        message:
+          error.message || "Failed to start C++ compiler.",
       });
     });
 
     compile.on("close", (code) => {
 
       if (code !== 0) {
+        console.log("===== C++ COMPILATION FAILED =====");
+        console.log(compileError);
+
         cleanupFiles(filePath, executablePath);
 
         reject({
           type: VERDICTS.COMPILATION_ERROR,
-          message: compileError || "Compilation failed.",
+          message:
+            compileError || "Compilation failed.",
         });
 
         return;
       }
 
+      console.log("C++ compilation successful");
+      console.log(
+        "Executable exists:",
+        fs.existsSync(executablePath)
+      );
+
       // =========================
       // RUN C++ PROGRAM
       // =========================
+
       const execute = spawn(executablePath, [], {
         cwd: dir,
       });
@@ -83,7 +107,6 @@ const executeCpp = (filePath, input = "") => {
         runtimeError += data.toString();
       });
 
-      // Important: handles executable start failure
       execute.on("error", (error) => {
         clearTimeout(timeout);
 
@@ -91,7 +114,8 @@ const executeCpp = (filePath, input = "") => {
 
         reject({
           type: VERDICTS.RUNTIME_ERROR,
-          message: error.message || "Failed to start program.",
+          message:
+            error.message || "Failed to start C++ program.",
         });
       });
 
@@ -106,7 +130,8 @@ const executeCpp = (filePath, input = "") => {
         if (code !== 0) {
           reject({
             type: VERDICTS.RUNTIME_ERROR,
-            message: runtimeError || "Runtime Error",
+            message:
+              runtimeError || "Runtime Error",
           });
 
           return;
