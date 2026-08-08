@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -12,15 +13,26 @@ import Profile from "../pages/Profile";
 import Contests from "../pages/Contests";
 import ContestArena from "../pages/ContestArena";
 import NotFound from "../pages/NotFound";
+import Navbar from "../components/Navbar";
 
+function AppContent() {
+  const location = useLocation();
 
-function AppRoutes() {
+  const hideNavbar =
+    location.pathname === "/login" ||
+    location.pathname === "/register";
+
   return (
-    <BrowserRouter>
+    <>
+      {!hideNavbar && <Navbar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
         <Route
           path="/dashboard"
           element={
@@ -29,7 +41,8 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-       <Route
+
+        <Route
           path="/problems"
           element={
             <ProtectedRoute>
@@ -37,7 +50,8 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-       <Route
+
+        <Route
           path="/problems/:id"
           element={
             <ProtectedRoute>
@@ -45,27 +59,44 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
         <Route
-            path="/submissions"
-            element={
-              <ProtectedRoute>
-                <SubmissionHistory />
-              </ProtectedRoute>
-            }
+          path="/submissions"
+          element={
+            <ProtectedRoute>
+              <SubmissionHistory />
+            </ProtectedRoute>
+          }
         />
+
         <Route
-            path="/leaderboard"
-            element={
-              <ProtectedRoute>
-                <Leaderboard />
-              </ProtectedRoute>
-             }
-         />
-         <Route path="/profile" element={<Profile />} />
-         <Route path="/contests" element={<Contests />} />
-         <Route path="/contest/:id" element={<ContestArena />}/>
-         <Route path="*" element={<NotFound />} />
+          path="/leaderboard"
+          element={
+            <ProtectedRoute>
+              <Leaderboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/profile" element={<Profile />} />
+
+        <Route path="/contests" element={<Contests />} />
+
+        <Route
+          path="/contest/:id"
+          element={<ContestArena />}
+        />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
+    </>
+  );
+}
+
+function AppRoutes() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

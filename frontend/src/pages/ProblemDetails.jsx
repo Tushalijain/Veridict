@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import api from "../services/api";
-import Navbar from "../components/Navbar";
+
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
 import { FaRobot } from "react-icons/fa";
@@ -249,7 +249,7 @@ const example = problem.examples?.[selectedExample];
 
   return (
   <>
-    <Navbar />
+    
 
     <div className="min-h-screen bg-[#050816] text-white">
   <div className="max-w-[1600px] mx-auto px-8 lg:px-20 py-10">

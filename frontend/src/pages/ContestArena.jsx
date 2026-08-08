@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
-import Navbar from "../components/Navbar";
+
 
 function ContestArena() {
 
@@ -106,7 +106,7 @@ setLeaderboard(board.data);
 console.log("Contest _id:", contest?._id);
     return (
   <>
-    <Navbar />
+    
 
     <div className="min-h-screen bg-[#0f172a] text-white p-10">
 

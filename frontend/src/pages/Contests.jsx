@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import Navbar from "../components/Navbar";
+
 import { useNavigate } from "react-router-dom";
 
 function Contests() {
@@ -73,7 +73,7 @@ const getRemainingTime = (targetTime) => {
 };
   return (
     <>
-      <Navbar />
+      
 
       <div className="min-h-screen bg-[#0f172a] px-8 py-10 text-white">
 

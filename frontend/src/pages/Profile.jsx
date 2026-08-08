@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import Navbar from "../components/Navbar";
+
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -42,7 +42,7 @@ for (let i = 0; i < last35Days.length; i += 7) {
   if (!profile) {
     return (
       <>
-        <Navbar />
+        
         <h2 className="text-center mt-10">Loading...</h2>
       </>
     );
@@ -63,7 +63,7 @@ for (let i = 34; i >= 0; i--) {
 
   return (
     <>
-      <Navbar />
+      
 
       <div className="min-h-screen bg-slate-950 text-white px-8 py-10">
 
@@ -136,7 +136,7 @@ for (let i = 34; i >= 0; i--) {
   <h3 className="text-slate-400 text-sm uppercase tracking-wide">
     Acceptance
   </h3>
-  <p className="text-4xl font-bold text-yellow-400 mt-2">
+  <p className="text-3xl font-bold text-yellow-400 mt-2">
     {stats.acceptanceRate}%
   </p>
 </div>

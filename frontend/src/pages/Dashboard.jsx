@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+
 
 function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -27,7 +27,7 @@ function Dashboard() {
   if (loading) {
     return (
       <>
-        <Navbar />
+        
         <div className="min-h-screen flex justify-center items-center">
           <h1 className="text-2xl font-semibold text-gray-500">
             Loading Dashboard...
@@ -41,100 +41,80 @@ function Dashboard() {
 
   const { stats, difficulty, recentSubmissions } = dashboard;
 
-  return (
-    <>
-      <Navbar />
+ return (
+  <>
+    <div className="min-h-screen bg-transparent w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
 
-      <div className="min-h-screen bg-transparent px-10 py-10 max-w-7xl mx-auto">
+      <div className="mb-8 sm:mb-10">
+        <p className="text-slate-400 mt-2">
+          Ready to solve today's problems?
+        </p>
+      </div>
 
-        <div className="mb-10">
-   <p className="text-white mt-2 mb-8 text-xl">
-     Welcome back! Here's your coding progress.
-</p>
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
 
-    <p className="text-slate-400 mt-2">
-        Ready to solve today's problems?
-    </p>
-</div>
+        <div className="
+          bg-slate-900/70
+          border
+          border-slate-700
+          rounded-2xl
+          p-4 sm:p-6
+          backdrop-blur-xl
+        ">
+          Problems
 
-
-        {/* Stats */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
-
-          <div className="
-bg-slate-900/70
-border
-border-slate-700
-rounded-2xl
-p-6
-backdrop-blur-xl
-
-">
-            <h2 className="text-slate-400 text-sm uppercase tracking-wide font-semibold">
-              Problems
-            </h2>
-
-            <p className="text-4xl font-bold text-white mt-2">
-              {stats.totalProblems}
-            </p>
-          </div>
-
-          <div className="
-bg-slate-900/70
-border
-border-slate-700
-rounded-2xl
-p-6
-backdrop-blur-xl
-
-">
-            <h2 className="text-slate-400 text-sm uppercase tracking-wide font-semibold">
-              Submissions
-            </h2>
-
-            <p className="text-4xl font-bold text-white mt-2">
-              {stats.totalSubmissions}
-            </p>
-          </div>
-
-          <div className="
-bg-slate-900/70
-border
-border-slate-700
-rounded-2xl
-p-6
-backdrop-blur-xl
-
-">
-            <h2 className="text-slate-400 text-sm uppercase tracking-wide font-semibold">
-              Accepted
-            </h2>
-
-            <p className="text-4xl font-bold text-white mt-2">
-              {stats.accepted}
-            </p>
-          </div>
-
-          <div className="
-bg-slate-900/70
-border
-border-slate-700
-rounded-2xl
-p-6
-backdrop-blur-xl
-
-">
-            <h2 className="text-slate-400 text-sm uppercase tracking-wide font-semibold">
-              Accuracy
-            </h2>
-
-            <p className="text-4xl font-bold text-white mt-2">
-              {stats.accuracy}%
-            </p>
-          </div>
-
+          <p className="text-3xl sm:text-4xl font-bold text-white mt-2">
+            {stats.totalProblems}
+          </p>
         </div>
+
+        <div className="
+          bg-slate-900/70
+          border
+          border-slate-700
+          rounded-2xl
+          p-4 sm:p-6
+          backdrop-blur-xl
+        ">
+          Submissions
+
+          <p className="text-3xl sm:text-4xl font-bold text-white mt-2">
+            {stats.totalSubmissions}
+          </p>
+        </div>
+
+        <div className="
+          bg-slate-900/70
+          border
+          border-slate-700
+          rounded-2xl
+          p-4 sm:p-6
+          backdrop-blur-xl
+        ">
+          Accepted
+
+          <p className="text-3xl sm:text-4xl font-bold text-white mt-2">
+            {stats.accepted}
+          </p>
+        </div>
+
+        <div className="
+          bg-slate-900/70
+          border
+          border-slate-700
+          rounded-2xl
+          p-4 sm:p-6
+          backdrop-blur-xl
+        ">
+          Accuracy
+
+          <p className="text-3xl sm:text-4xl font-bold text-white mt-2">
+            {stats.accuracy}%
+          </p>
+        </div>
+
+      </div>
 
         {/* Recent Activity */}
 
@@ -148,7 +128,7 @@ backdrop-blur-xl
 
 ">
 
-          <h2 className="text-2xl font-bold mb-5">
+          <h2 className="text-xl sm:text-2xl font-bold mb-5">
             Recent Activity
           </h2>
 
@@ -166,12 +146,12 @@ backdrop-blur-xl
 
                 <div
                   key={submission._id}
-                  className="flex justify-between items-center border-b pb-3"
+                  className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b pb-3"
                 >
 
                   <div>
 
-                    <h3 className="font-semibold">
+                    <h3 className="font-semibold break-words">
                       {submission.problem?.title || "Problem"}
                     </h3>
 
@@ -182,12 +162,12 @@ backdrop-blur-xl
                   </div>
 
                   <span
-                    className={`font-semibold ${
-                      submission.verdict === "Accepted"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
+  className={`font-semibold shrink-0 ${
+    submission.verdict === "Accepted"
+      ? "text-green-600"
+      : "text-red-600"
+  }`}
+>
                     {submission.verdict}
                   </span>
 
@@ -213,7 +193,7 @@ backdrop-blur-xl
 
 ">
 
-          <h2 className="text-2xl font-bold text-white mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-6">
   Problem Progress
 </h2>
 
@@ -223,7 +203,7 @@ backdrop-blur-xl
 
             <div>
 
-              <div className="flex justify-between mb-2">
+             <div className="flex justify-between items-center gap-3 mb-2">
 
                 <span className="font-medium text-green-600">
                   Easy
@@ -258,7 +238,7 @@ backdrop-blur-xl
 
             <div>
 
-              <div className="flex justify-between mb-2">
+             <div className="flex justify-between items-center gap-3 mb-2">
 
                 <span className="font-medium text-yellow-600">
                   Medium
@@ -293,7 +273,7 @@ backdrop-blur-xl
 
             <div>
 
-              <div className="flex justify-between mb-2">
+             <div className="flex justify-between items-center gap-3 mb-2">
 
                 <span className="font-medium text-red-600">
                   Hard

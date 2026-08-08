@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import Navbar from "../components/Navbar";
+
 
 function SubmissionHistory() {
   const [submissions, setSubmissions] = useState([]);
@@ -21,7 +21,7 @@ function SubmissionHistory() {
 
   return (
     <>
-     <Navbar />
+     
     <div className="min-h-screen bg-[#050816] text-white">
   <div className="max-w-7xl mx-auto px-8 lg:px-20 py-12">
 
