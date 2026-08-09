@@ -93,18 +93,20 @@ const user = await User.findOne({
 });
 
         if (!user) {
-            return res.status(404).json({
-                message: "User not found"
-            });
-        }
+    return res.status(401).json({
+        success: false,
+        message: "Incorrect email or password"
+    });
+}
 
-        const isMatch = await bcrypt.compare(password, user.password);
+const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!isMatch) {
-            return res.status(401).json({
-                message: "Invalid credentials"
-            });
-        }
+if (!isMatch) {
+    return res.status(401).json({
+        success: false,
+        message: "Incorrect email or password"
+    });
+}
 
             const token = jwt.sign(
         {
