@@ -21,11 +21,11 @@ const register = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(409).json({
-        message: "User already exists"
-      });
-    }
-
+    return res.status(409).json({
+        success: false,
+        message: "An account with this email already exists. Please log in instead."
+    });
+}
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -58,13 +58,22 @@ const register = async (req, res) => {
       user
     });
 
-  } catch (error) {
+ } catch (error) {
     console.error("Registration error:", error);
 
+    // Duplicate email
+    if (error.code === 11000) {
+        return res.status(409).json({
+            success: false,
+            message: "An account with this email already exists. Please log in instead."
+        });
+    }
+
     return res.status(500).json({
-      message: error.message
+        success: false,
+        message: "Registration failed. Please try again."
     });
-  }
+}
 };
 
 const login = async (req, res) => {
