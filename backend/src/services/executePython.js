@@ -7,7 +7,7 @@ const VERDICTS = require("../constants/verdicts");
 const executePython = (filePath, input = "") => {
     return new Promise((resolve, reject) => {
 
-        // Check that generated file exists
+        // Make sure Python source exists
         if (!fs.existsSync(filePath)) {
             return reject({
                 type: VERDICTS.RUNTIME_ERROR,
@@ -16,10 +16,9 @@ const executePython = (filePath, input = "") => {
         }
 
         console.log("===== PYTHON EXECUTION =====");
-        console.log("Python file:", filePath);
-        console.log("Python file exists:", fs.existsSync(filePath));
+        console.log("File:", filePath);
+        console.log("File exists:", fs.existsSync(filePath));
 
-        // Execute Python directly
         const execute = spawn("python3", [filePath]);
 
         let output = "";
@@ -61,11 +60,8 @@ const executePython = (filePath, input = "") => {
         execute.on("close", (code) => {
             clearTimeout(timeout);
 
-            cleanupFiles(filePath);
-
             if (code !== 0) {
-                console.log("===== PYTHON RUNTIME ERROR =====");
-                console.log(runtimeError);
+                cleanupFiles(filePath);
 
                 reject({
                     type: VERDICTS.RUNTIME_ERROR,
@@ -74,6 +70,10 @@ const executePython = (filePath, input = "") => {
 
                 return;
             }
+
+            // IMPORTANT:
+            // Do NOT cleanup here.
+            // judgeService handles cleanup after ALL test cases.
 
             resolve(output);
         });
