@@ -25,13 +25,20 @@ const judgeService = async (language, code, testCases) => {
         };
       }
     } catch (error) {
-      return {
+    console.log("===== JUDGE EXECUTION ERROR =====");
+    console.log("Language:", language);
+    console.log("File:", filePath);
+    console.log("Error type:", error.type);
+    console.log("Error message:", error.message);
+    console.log("Full error:", error);
+
+    return {
         verdict: error.type || VERDICTS.RUNTIME_ERROR,
         passed: false,
         executionTime: 0,
         error: error.message || String(error),
-      };
-    }
+    };
+}
   }
   return {
     verdict: VERDICTS.ACCEPTED,
