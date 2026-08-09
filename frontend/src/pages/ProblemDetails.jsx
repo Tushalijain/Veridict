@@ -138,8 +138,7 @@ const submitCode = async () => {
       return;
     }
 console.log("Token before submit:", localStorage.getItem("token"));
- const response = await api.post("/submissions", {
-  userId: user._id,
+const response = await api.post("/submissions", {
   problemId: id,
   contestId,
   language,

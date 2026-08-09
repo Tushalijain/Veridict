@@ -8,7 +8,9 @@ const judgeService = require("../services/judgeService");
 
 const createSubmission = async (req, res) => {
     try {
-        const {userId, problemId, contestId,language, code,} = req.body;
+       const { problemId, contestId, language, code } = req.body;
+
+const userId = req.user.userId;
     let contest = null;
 
 if (contestId) {
@@ -306,9 +308,7 @@ const getUserSubmissions = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const submissions = await Submission.find({
-      user: userId
-    })
+    const submissions = await Submission.find({ user: userId })
       .populate("problem", "title")
       .sort({ createdAt: -1 });
 
@@ -316,7 +316,6 @@ const getUserSubmissions = async (req, res) => {
       success: true,
       submissions,
     });
-
   } catch (error) {
     console.error(error);
 
@@ -326,7 +325,6 @@ const getUserSubmissions = async (req, res) => {
     });
   }
 };
-
 module.exports = {
   createSubmission,
   getSubmissions,

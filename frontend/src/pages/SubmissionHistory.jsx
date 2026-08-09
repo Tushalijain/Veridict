@@ -9,15 +9,17 @@ function SubmissionHistory() {
     fetchSubmissions();
   }, []);
 
-  const fetchSubmissions = async () => {
-    try {
-      const response = await api.get("/submissions");
-       console.log(response.data);
-      setSubmissions(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+ const fetchSubmissions = async () => {
+  try {
+    const response = await api.get("/submissions/user");
+
+    console.log(response.data);
+
+    setSubmissions(response.data.submissions);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <>
