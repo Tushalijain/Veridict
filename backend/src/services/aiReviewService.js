@@ -1,11 +1,27 @@
 const axios = require("axios");
 
-const reviewCode = async (language, code) => {
+const reviewCode = async (language, code, problemStatement) => {
 
   const prompt = `
 You are an expert Competitive Programming Mentor.
 
-Review the following ${language} code.
+Your job is to review a student's submitted code AGAINST THE GIVEN PROBLEM STATEMENT.
+
+IMPORTANT:
+The problem statement is the source of truth.
+
+Do NOT assume that the submitted code is correct.
+First determine what the problem actually asks.
+Then determine whether the submitted code solves that problem.
+
+Problem Statement:
+${problemStatement}
+
+Student Language:
+${language}
+
+Student Code:
+${code}
 
 IMPORTANT RULES:
 
@@ -15,10 +31,14 @@ IMPORTANT RULES:
 - Do NOT explain every line of code.
 - Do NOT write long paragraphs.
 - Keep every section short (1-3 bullet points).
-- If the code has a mistake or can be improved, give a helpful hint about the approach.
-- The hint should guide the learner toward fixing the problem without giving away the complete solution.
-- Do NOT reveal the complete solution inside the hint.
-- If the code is already correct, say that no correction hint is needed.
+- Compare the code directly against the problem requirements.
+- Identify logical errors even if the submitted code itself compiles and runs.
+- Do NOT praise code for producing an output that does not satisfy the problem.
+- If the code solves a different problem, clearly explain that.
+- If the submission is incorrect, provide a useful approach hint.
+- The hint should guide the learner toward the correct algorithm.
+- Do NOT give the complete solution in the hint.
+- Do NOT claim the code is correct unless it actually solves the given problem.
 
 Return ONLY in this format:
 
@@ -38,7 +58,7 @@ X/10
 
 # 💡 Approach Hint
 
-- Give a short hint that helps the learner understand what approach or idea they should consider.
+- Explain the key idea or direction the student should think about.
 - Do not provide the complete solution.
 
 # 📊 Complexity
@@ -48,15 +68,13 @@ Space Complexity: O(?)
 
 # 💡 Better Version
 
-Provide only the improved code inside a code block.
+Provide the corrected version of the code inside a code block.
 
 # 🏁 Final Verdict
 
 Write only 1-2 short sentences.
+Clearly state whether the submitted code solves the given problem.
 
-Code:
-
-${code}
 `;
 
   try {

@@ -182,6 +182,7 @@ const reviewCode = async () => {
       {
         language,
         code,
+        problemStatement: problem.statement,
       },
       {
         headers: {
@@ -195,6 +196,7 @@ const reviewCode = async () => {
     } else {
       setReview("Unable to review code.");
     }
+
   } catch (error) {
     console.error(error);
     console.error(error.response?.data);
