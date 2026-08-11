@@ -6,10 +6,9 @@ const VERDICTS = require("../constants/verdicts");
 
 const judgeService = async (language, code, testCases) => {
     const filePath = await generateFile(language, code);
-    console.log("===== GENERATED FILE =====");
+    console.log("===== JUDGE FILE =====");
 console.log("Language:", language);
 console.log("File:", filePath);
-console.log("Exists immediately:", require("fs").existsSync(filePath));
 
     let executionTime = 0;
 

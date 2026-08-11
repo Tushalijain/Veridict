@@ -1,85 +1,203 @@
-const { spawn } = require("child_process");
+const fs = require("fs");
 const path = require("path");
+const { spawn } = require("child_process");
+
 const cleanupFiles = require("../utils/cleanupFiles");
 const VERDICTS = require("../constants/verdicts");
 
 const executeC = (filePath, input = "") => {
-  const dir = path.dirname(filePath);
-  const fileName = path.basename(filePath);
-  const executable = process.platform === "win32" ? "Main.exe" : "Main";
+    return new Promise((resolve, reject) => {
+        const dir = path.dirname(filePath);
+        const fileName = path.basename(filePath);
 
-  return new Promise((resolve, reject) => {
-    // Compile C
-    const compile = spawn("gcc", [fileName, "-o", executable], {
-      cwd: dir,
-    });
+        const executable =
+            process.platform === "win32"
+                ? "Main.exe"
+                : "Main";
 
-    let compileError = "";
+        const executablePath = path.join(dir, executable);
 
-    compile.stderr.on("data", (data) => {
-      compileError += data.toString();
-    });
+        // =========================
+        // CHECK SOURCE FILE
+        // =========================
 
-    compile.on("close", (code) => {
-      if (code !== 0) {
-        cleanupFiles(filePath);
-
-        return reject({
-          type: VERDICTS.COMPILATION_ERROR,
-          message: compileError || "Compilation failed.",
-        });
-      }
-
-      const execPath =
-        process.platform === "win32"
-          ? path.join(dir, executable)
-          : `./${executable}`;
-
-      const execute = spawn(execPath, [], {
-        cwd: dir,
-      });
-
-      const timeout = setTimeout(() => {
-        execute.kill();
-
-        cleanupFiles(filePath, path.join(dir, executable));
-
-        reject({
-          type: VERDICTS.TIME_LIMIT_EXCEEDED,
-          message: "Program exceeded 2 seconds.",
-        });
-      }, 2000);
-
-      let output = "";
-      let runtimeError = "";
-
-      execute.stdout.on("data", (data) => {
-        output += data.toString();
-      });
-
-      execute.stderr.on("data", (data) => {
-        runtimeError += data.toString();
-      });
-
-      execute.stdin.write(input);
-      execute.stdin.end();
-
-      execute.on("close", (runCode) => {
-        clearTimeout(timeout);
-
-        cleanupFiles(filePath, path.join(dir, executable));
-
-        if (runCode !== 0) {
-          return reject({
-            type: VERDICTS.RUNTIME_ERROR,
-            message: runtimeError || "Runtime Error",
-          });
+        if (!fs.existsSync(filePath)) {
+            return reject({
+                type: VERDICTS.COMPILATION_ERROR,
+                message: `C source file not found: ${filePath}`,
+            });
         }
 
-        resolve(output);
-      });
+        console.log("===== C PATH DEBUG =====");
+        console.log("filePath:", filePath);
+        console.log("dirname:", dir);
+        console.log("fileName:", fileName);
+        console.log("exists:", fs.existsSync(filePath));
+        console.log("directory exists:", fs.existsSync(dir));
+        console.log("directory files:", fs.readdirSync(dir));
+
+        // =========================
+        // COMPILE C
+        // =========================
+
+        const compile = spawn(
+            "gcc",
+            [
+                fileName,
+                "-o",
+                executable,
+            ],
+            {
+                cwd: dir,
+            }
+        );
+
+        let compileError = "";
+
+        compile.stdout.on("data", (data) => {
+            console.log("GCC:", data.toString());
+        });
+
+        compile.stderr.on("data", (data) => {
+            compileError += data.toString();
+        });
+
+        compile.on("error", (error) => {
+            cleanupFiles(executablePath);
+
+            return reject({
+                type: VERDICTS.COMPILATION_ERROR,
+                message:
+                    error.message ||
+                    "Unable to start GCC compiler.",
+            });
+        });
+
+        compile.on("close", (code) => {
+            // =========================
+            // COMPILATION ERROR
+            // =========================
+
+            if (code !== 0) {
+                console.log("===== C COMPILATION ERROR =====");
+                console.log(compileError);
+
+                cleanupFiles(executablePath);
+
+                return reject({
+                    type: VERDICTS.COMPILATION_ERROR,
+                    message:
+                        compileError ||
+                        "Compilation failed.",
+                });
+            }
+
+            console.log("===== C COMPILATION SUCCESS =====");
+            console.log(
+                "Executable exists:",
+                fs.existsSync(executablePath)
+            );
+
+            // =========================
+            // EXECUTE PROGRAM
+            // =========================
+
+            const executePath =
+                process.platform === "win32"
+                    ? executablePath
+                    : `./${executable}`;
+
+            const execute = spawn(
+                executePath,
+                [],
+                {
+                    cwd: dir,
+                }
+            );
+
+            let output = "";
+            let runtimeError = "";
+
+            // =========================
+            // TIME LIMIT
+            // =========================
+
+            const timeout = setTimeout(() => {
+                execute.kill();
+
+                cleanupFiles(executablePath);
+
+                return reject({
+                    type: VERDICTS.TIME_LIMIT_EXCEEDED,
+                    message: "Program exceeded 2 seconds.",
+                });
+            }, 2000);
+
+            // =========================
+            // STDOUT
+            // =========================
+
+            execute.stdout.on("data", (data) => {
+                output += data.toString();
+            });
+
+            // =========================
+            // STDERR
+            // =========================
+
+            execute.stderr.on("data", (data) => {
+                runtimeError += data.toString();
+            });
+
+            // =========================
+            // EXECUTION ERROR
+            // =========================
+
+            execute.on("error", (error) => {
+                clearTimeout(timeout);
+
+                cleanupFiles(executablePath);
+
+                return reject({
+                    type: VERDICTS.RUNTIME_ERROR,
+                    message:
+                        error.message ||
+                        "Failed to execute C program.",
+                });
+            });
+
+            // =========================
+            // SEND INPUT
+            // =========================
+
+            execute.stdin.write(input);
+            execute.stdin.end();
+
+            // =========================
+            // EXECUTION FINISHED
+            // =========================
+
+            execute.on("close", (code) => {
+                clearTimeout(timeout);
+
+                // Delete executable only.
+                // judgeService deletes source file
+                // after all test cases are finished.
+                cleanupFiles(executablePath);
+
+                if (code !== 0) {
+                    return reject({
+                        type: VERDICTS.RUNTIME_ERROR,
+                        message:
+                            runtimeError ||
+                            "Runtime Error",
+                    });
+                }
+
+                resolve(output);
+            });
+        });
     });
-  });
 };
 
 module.exports = executeC;

@@ -1,0 +1,25 @@
+FROM node:22-bookworm
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    python3 \
+    openjdk-17-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy backend package files
+COPY backend/package*.json ./
+
+RUN npm install
+
+# Copy backend source
+COPY backend/ .
+
+RUN mkdir -p src/temp/codes
+RUN mkdir -p src/temp/outputs
+
+EXPOSE 5000
+
+CMD ["npm", "start"]
