@@ -2,6 +2,8 @@ const generateFile = require("../services/generateFile");
 const executeCodeService = require("../services/executeService");
 
 const executeCode = async (req, res) => {
+    console.log("🔥 EXECUTE CONTROLLER HIT");
+console.log("Body:", req.body);
     try {
         const { language, code, input } = req.body;
 

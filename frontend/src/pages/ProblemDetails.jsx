@@ -89,37 +89,43 @@ const getStorageKey = (language) => {
     }
   };
   
-  const runCode = async () => {
+ const runCode = async () => {
   try {
     setReview("");
     setRunning(true);
     setOutput("Running...");
 
-   const response = await fetch(
-  `${import.meta.env.VITE_API_URL}/compiler/run`,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+    const response = await api.post("/execute", {
       language,
       code,
       input: customInput,
-    }),
-  }
-);
+    });
 
-    const data = await response.json();
+    const data = response.data;
 
     if (data.success) {
-      setOutput(data.output);
+      setOutput(data.output || "");
     } else {
-      setOutput(data.message || "Execution Failed");
+      setOutput(
+        data.error ||
+        data.message ||
+        "Execution Failed"
+      );
     }
+
   } catch (error) {
-    console.error(error);
-    setOutput("Unable to connect to the server.");
+    console.error("Run Code Error:", error);
+
+    if (error.response?.data) {
+      setOutput(
+        error.response.data.error ||
+        error.response.data.message ||
+        "Execution Failed"
+      );
+    } else {
+      setOutput("Unable to connect to the server.");
+    }
+
   } finally {
     setRunning(false);
   }

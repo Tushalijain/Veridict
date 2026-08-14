@@ -1,7 +1,7 @@
 const { spawn } = require("child_process");
 const path = require("path");
 const VERDICTS = require("../constants/verdicts");
-
+console.log("🔥 NEW executeDocker.js LOADED");
 const executeDocker = (language, filePath, input = "") => {
     return new Promise((resolve, reject) => {
         const dir = path.dirname(filePath);
@@ -57,42 +57,36 @@ const executeDocker = (language, filePath, input = "") => {
         console.log("File:", filePath);
         console.log("File exists:", require("fs").existsSync(filePath));
 
-        const docker = spawn("docker", [
-            "run",
-            "--rm",
+        const docker = spawn(
+    "docker",
+    [
+        "run",
+        "--rm",
+        "-i",
 
-            // Interactive stdin
-            "-i",
+        "--network",
+        "none",
 
-            // Disable internet
-            "--network",
-            "none",
+        "--memory",
+        "128m",
 
-            // Memory limit
-            "--memory",
-            "128m",
+        "--cpus",
+        "1",
 
-            // CPU limit
-            "--cpus",
-            "1",
+        "--pids-limit",
+        "64",
 
-            // Limit processes
-            "--pids-limit",
-            "64",
+        "-v",
+        `${dir}:/workspace`,
 
-            // Mount source directory
-            "-v",
-            `${dir}:/workspace`,
+        "-w",
+        "/workspace",
 
-            // Working directory
-            "-w",
-            "/workspace",
+        "online-judge-backend",
 
-            // Our Docker image
-            "online-judge-backend",
-
-            ...command
-        ]);
+        ...command
+    ]
+);
 
         let output = "";
         let error = "";

@@ -1,10 +1,16 @@
 const executeCode = require("./executeService");
 const generateFile = require("./generateFile");
 const compareOutput = require("../utils/compareOutput");
+const path = require("path");
 const cleanupFiles = require("../utils/cleanupFiles");
 const VERDICTS = require("../constants/verdicts");
 
 const judgeService = async (language, code, testCases) => {
+     console.log("===== JUDGE START =====");
+    console.log("Language:", language);
+    console.log("Number of test cases:", testCases.length);
+    console.log("Test cases:", testCases);
+
     const filePath = await generateFile(language, code);
     console.log("===== JUDGE FILE =====");
 console.log("Language:", language);
@@ -14,6 +20,9 @@ console.log("File:", filePath);
 
     try {
         for (const testCase of testCases) {
+            console.log("===== CURRENT TEST CASE =====");
+console.log("Input:", JSON.stringify(testCase.input));
+console.log("Expected:", JSON.stringify(testCase.output));
             try {
                 const start = Date.now();
 
@@ -60,9 +69,24 @@ console.log("File:", filePath);
         };
 
     } finally {
-        // Cleanup only after ALL test cases are finished
+    console.log("===== CLEANUP START =====");
+    console.log("Language:", language);
+    console.log("File path:", filePath);
+
+    if (language === "java") {
+        const javaDir = path.dirname(filePath);
+
+        console.log("Removing Java directory:", javaDir);
+
+        cleanupFiles(javaDir);
+    } else {
+        console.log("Removing file:", filePath);
+
         cleanupFiles(filePath);
     }
+
+    console.log("===== CLEANUP END =====");
+}
 };
 
 module.exports = judgeService;
