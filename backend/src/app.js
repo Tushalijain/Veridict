@@ -18,15 +18,14 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(
-    cors({
-        origin: [
-            "https://veridict-frontend.vercel.app",
-            "http://localhost:5173",
-        ],
-        credentials: true,
-    })
-);
+app.use(cors({
+  origin: [
+    "https://veridictapp.xyz",
+    "https://www.veridictapp.xyz",
+    "https://veridict-frontend.vercel.app"
+  ],
+  credentials: true
+}));
 
 // Routes
 app.use("/api/auth", authRoutes);
