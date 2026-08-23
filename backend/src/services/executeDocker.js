@@ -1,27 +1,26 @@
 const { spawn } = require("child_process");
 const path = require("path");
+const fs = require("fs");
 const VERDICTS = require("../constants/verdicts");
+
 console.log("🔥 NEW executeDocker.js LOADED");
+
 const executeDocker = (language, filePath, input = "") => {
     return new Promise((resolve, reject) => {
         const dir = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
-        let command = [];
-        let compileError = "";
+        let image;
+        let command;
 
-        // --------------------------------
-        // Select language command
-        // --------------------------------
-
+        // Select Docker image + execution command
         if (language === "python") {
-            command = [
-                "python3",
-                fileName
-            ];
+            image = "python:3.11";
+            command = ["python3", fileName];
         }
 
         else if (language === "c") {
+            image = "gcc:latest";
             command = [
                 "bash",
                 "-c",
@@ -30,6 +29,7 @@ const executeDocker = (language, filePath, input = "") => {
         }
 
         else if (language === "cpp") {
+            image = "gcc:latest";
             command = [
                 "bash",
                 "-c",
@@ -38,6 +38,7 @@ const executeDocker = (language, filePath, input = "") => {
         }
 
         else if (language === "java") {
+            image = "eclipse-temurin:17-jdk";
             command = [
                 "bash",
                 "-c",
@@ -54,75 +55,68 @@ const executeDocker = (language, filePath, input = "") => {
 
         console.log("===== DOCKER EXECUTION =====");
         console.log("Language:", language);
+        console.log("Image:", image);
         console.log("File:", filePath);
-        console.log("File exists:", require("fs").existsSync(filePath));
+        console.log("File exists:", fs.existsSync(filePath));
 
-        const docker = spawn(
-    "docker",
-    [
-        "run",
-        "--rm",
-        "-i",
+        const docker = spawn("docker", [
+            "run",
+            "--rm",
+            "-i",
 
-        "--network",
-        "none",
+            "--network",
+            "none",
 
-        "--memory",
-        "128m",
+            "--memory",
+            "128m",
 
-        "--cpus",
-        "1",
+            "--cpus",
+            "1",
 
-        "--pids-limit",
-        "64",
+            "--pids-limit",
+            "64",
 
-        "-v",
-        `${dir}:/workspace`,
+            "-v",
+            `${dir}:/workspace`,
 
-        "-w",
-        "/workspace",
+            "-w",
+            "/workspace",
 
-        "online-judge-backend",
+            image,
 
-        ...command
-    ]
-);
+            ...command
+        ]);
 
         let output = "";
         let error = "";
+        let finished = false;
 
-        // --------------------------------
         // STDOUT
-        // --------------------------------
-
         docker.stdout.on("data", (data) => {
             output += data.toString();
         });
 
-        // --------------------------------
         // STDERR
-        // --------------------------------
-
         docker.stderr.on("data", (data) => {
             error += data.toString();
         });
 
-        // --------------------------------
         // Docker process failed to start
-        // --------------------------------
-
         docker.on("error", (err) => {
+            if (finished) return;
+            finished = true;
+
             reject({
                 type: VERDICTS.RUNTIME_ERROR,
                 message: `Docker execution failed: ${err.message}`
             });
         });
 
-        // --------------------------------
-        // Timeout
-        // --------------------------------
-
+        // 2 second timeout
         const timeout = setTimeout(() => {
+            if (finished) return;
+
+            finished = true;
             docker.kill();
 
             reject({
@@ -131,19 +125,16 @@ const executeDocker = (language, filePath, input = "") => {
             });
         }, 2000);
 
-        // --------------------------------
         // Send input
-        // --------------------------------
-
         docker.stdin.write(input);
         docker.stdin.end();
 
-        // --------------------------------
         // Process finished
-        // --------------------------------
-
         docker.on("close", (code) => {
+            if (finished) return;
+
             clearTimeout(timeout);
+            finished = true;
 
             console.log("Docker exit code:", code);
             console.log("Docker output:", JSON.stringify(output));
@@ -154,7 +145,7 @@ const executeDocker = (language, filePath, input = "") => {
                 return;
             }
 
-            // Java / C / C++ compilation errors
+            // C / C++ / Java compilation errors
             if (
                 language === "c" ||
                 language === "cpp" ||
