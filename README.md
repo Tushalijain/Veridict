@@ -10,7 +10,7 @@ Veridict is a full-stack MERN-based Online Judge Platform that enables users to 
 https://veridict-frontend.vercel.app
 
 ### Backend
-https://veridict-backend-2l6y.onrender.com
+https://api.veridictapp.xyz
 
 ---
 
@@ -134,7 +134,7 @@ Integrated AI-powered code review provides:
 ## Compiler
 
 - Child Process API
-- Native Linux Code Execution
+- Docker-based execution
 
 ---
 
@@ -147,7 +147,7 @@ Integrated AI-powered code review provides:
 ## Deployment
 
 - Vercel
-- Render
+- AWS EC2
 - MongoDB Atlas
 
 ---
@@ -209,7 +209,7 @@ npm run dev
 ```env
 PORT=5000
 
-MONGO_URI=your_mongodb_connection_string
+MONGO_URL=your_mongodb_connection_string
 
 JWT_SECRET=your_secret_key
 
@@ -227,7 +227,7 @@ VITE_API_URL=http://localhost:5000/api
 For production:
 
 ```env
-VITE_API_URL=https://veridict-backend-2l6y.onrender.com/api
+VITE_API_URL=https://api.veridictapp.xyz/api
 ```
 
 ---
