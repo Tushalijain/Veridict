@@ -3,53 +3,65 @@ const path = require("path");
 const fs = require("fs");
 const VERDICTS = require("../constants/verdicts");
 
-console.log("🔥 NEW executeDocker.js LOADED");
+console.log("🔥 executeDocker.js LOADED");
 
 const executeDocker = (language, filePath, input = "") => {
     return new Promise((resolve, reject) => {
+
         const dir = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
         let image;
-        let command;
+        let command = [];
 
-        // Select Docker image + execution command
+        // --------------------------------
+        // Select Docker image + command
+        // --------------------------------
+
         if (language === "python") {
-            image = "python:3.11";
-            command = ["python3", fileName];
-        }
 
-        else if (language === "c") {
+            image = "python:3.11";
+
+            command = [
+                "python",
+                fileName
+            ];
+
+        } else if (language === "c") {
+
             image = "gcc:latest";
+
             command = [
                 "bash",
                 "-c",
                 `gcc "${fileName}" -o /tmp/main && /tmp/main`
             ];
-        }
 
-        else if (language === "cpp") {
+        } else if (language === "cpp") {
+
             image = "gcc:latest";
+
             command = [
                 "bash",
                 "-c",
                 `g++ "${fileName}" -o /tmp/main && /tmp/main`
             ];
-        }
 
-        else if (language === "java") {
+        } else if (language === "java") {
+
             image = "eclipse-temurin:17-jdk";
+
             command = [
                 "bash",
                 "-c",
                 `javac Main.java && java Main`
             ];
-        }
 
-        else {
+        } else {
+
             return reject({
-                type: VERDICTS.RUNTIME_ERROR,
-                message: "Unsupported language"
+                type: VERDICTS.INTERNAL_SYSTEM_ERROR,
+                message: "Unsupported language."
             });
         }
 
@@ -59,114 +71,194 @@ const executeDocker = (language, filePath, input = "") => {
         console.log("File:", filePath);
         console.log("File exists:", fs.existsSync(filePath));
 
-        const docker = spawn("docker", [
-            "run",
-            "--rm",
-            "-i",
+        // --------------------------------
+        // Start Docker container
+        // --------------------------------
 
-            "--network",
-            "none",
+        const docker = spawn(
+            "docker",
+            [
+                "run",
+                "--rm",
+                "-i",
 
-            "--memory",
-            "128m",
+                // Disable network access
+                "--network",
+                "none",
 
-            "--cpus",
-            "1",
+                // Increased memory for compiler
+                "--memory",
+                "512m",
 
-            "--pids-limit",
-            "64",
+                "--cpus",
+                "1",
 
-            "-v",
-            `${dir}:/workspace`,
+                "--pids-limit",
+                "64",
 
-            "-w",
-            "/workspace",
+                "-v",
+                `${dir}:/workspace`,
 
-            image,
+                "-w",
+                "/workspace",
 
-            ...command
-        ]);
+                image,
+
+                ...command
+            ]
+        );
 
         let output = "";
         let error = "";
-        let finished = false;
 
+        // --------------------------------
         // STDOUT
+        // --------------------------------
+
         docker.stdout.on("data", (data) => {
             output += data.toString();
         });
 
+        // --------------------------------
         // STDERR
+        // --------------------------------
+
         docker.stderr.on("data", (data) => {
             error += data.toString();
         });
 
-        // Docker process failed to start
+        // --------------------------------
+        // Docker process failed
+        // --------------------------------
+
         docker.on("error", (err) => {
-            if (finished) return;
-            finished = true;
 
             reject({
-                type: VERDICTS.RUNTIME_ERROR,
+                type: VERDICTS.INTERNAL_SYSTEM_ERROR,
                 message: `Docker execution failed: ${err.message}`
             });
+
         });
 
-        // 2 second timeout
-        const timeout = setTimeout(() => {
-            if (finished) return;
+        // --------------------------------
+        // Timeout
+        // --------------------------------
 
-            finished = true;
+        const timeout = setTimeout(() => {
+
             docker.kill();
 
             reject({
                 type: VERDICTS.TIME_LIMIT_EXCEEDED,
                 message: "Program exceeded 2 seconds."
             });
+
         }, 2000);
 
+        // --------------------------------
         // Send input
+        // --------------------------------
+
         docker.stdin.write(input);
         docker.stdin.end();
 
+        // --------------------------------
         // Process finished
+        // --------------------------------
+
         docker.on("close", (code) => {
-            if (finished) return;
 
             clearTimeout(timeout);
-            finished = true;
 
             console.log("Docker exit code:", code);
             console.log("Docker output:", JSON.stringify(output));
             console.log("Docker error:", JSON.stringify(error));
 
+            // --------------------------------
+            // Successful execution
+            // --------------------------------
+
             if (code === 0) {
+
                 resolve(output);
+                return;
+
+            }
+
+            // --------------------------------
+            // Infrastructure / Docker errors
+            // --------------------------------
+
+            if (
+                code === 137 ||
+                code === 125 ||
+                error.includes("Killed signal") ||
+                error.includes("Cannot connect to the Docker daemon") ||
+                error.includes("permission denied") ||
+                error.includes("No such image") ||
+                error.includes("pull access denied") ||
+                error.includes("failed to resolve reference") ||
+                error.includes("docker:")
+            ) {
+
+                reject({
+                    type: VERDICTS.INTERNAL_SYSTEM_ERROR,
+                    message: error || "Internal Docker execution error."
+                });
+
                 return;
             }
 
-            // C / C++ / Java compilation errors
+            // --------------------------------
+            // Compilation errors
+            // --------------------------------
+
             if (
-                language === "c" ||
-                language === "cpp" ||
-                language === "java"
-            ) {
-                const isCompilationError =
-                    error.includes("error:") ||
-                    error.includes("fatal error") ||
-                    error.includes("cannot find symbol") ||
-                    error.includes("class") ||
-                    error.includes("expected");
+    language === "c" ||
+    language === "cpp" ||
+    language === "java"
+) {
+    // Infrastructure / Docker / compiler process failures
+    const isSystemError =
+        error.includes("Killed signal") ||
+        error.includes("Cannot connect to the Docker daemon") ||
+        error.includes("permission denied") ||
+        error.includes("No such file or directory") ||
+        error.includes("failed to solve") ||
+        error.includes("pull access denied") ||
+        error.includes("not found") ||
+        error.includes("OCI runtime") ||
+        error.includes("containerd");
 
-                if (isCompilationError) {
-                    reject({
-                        type: VERDICTS.COMPILATION_ERROR,
-                        message: error || "Compilation failed."
-                    });
+    if (isSystemError) {
+        reject({
+            type: VERDICTS.INTERNAL_SYSTEM_ERROR,
+            message: error || "Internal system error."
+        });
 
-                    return;
-                }
-            }
+        return;
+    }
+
+    // Genuine compilation errors
+    const isCompilationError =
+        error.includes("error:") ||
+        error.includes("fatal error") ||
+        error.includes("cannot find symbol") ||
+        error.includes("expected");
+
+    if (isCompilationError) {
+        reject({
+            type: VERDICTS.COMPILATION_ERROR,
+            message: error || "Compilation failed."
+        });
+
+        return;
+    }
+}
+
+            // --------------------------------
+            // Normal runtime error
+            // --------------------------------
 
             reject({
                 type: VERDICTS.RUNTIME_ERROR,
