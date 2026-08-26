@@ -144,17 +144,18 @@ const executeDocker = (language, filePath, input = "") => {
         // Timeout
         // --------------------------------
 
+        const timeoutMs = language === "java" ? 10000 : 5000;
+
         const timeout = setTimeout(() => {
 
-            docker.kill();
+              docker.kill();
 
-            reject({
-                type: VERDICTS.TIME_LIMIT_EXCEEDED,
-                message: "Program exceeded 2 seconds."
-            });
+              reject({
+                    type: VERDICTS.TIME_LIMIT_EXCEEDED,
+                    message: `Program exceeded ${timeoutMs / 1000} seconds.`
+              });
 
-        }, 2000);
-
+        }, timeoutMs);
         // --------------------------------
         // Send input
         // --------------------------------
@@ -247,6 +248,25 @@ const executeDocker = (language, filePath, input = "") => {
         error.includes("expected");
 
     if (isCompilationError) {
+        reject({
+            type: VERDICTS.COMPILATION_ERROR,
+            message: error || "Compilation failed."
+        });
+
+        return;
+    }
+}
+// --------------------------------
+// Python syntax / compilation errors
+// --------------------------------
+
+if (language === "python") {
+    const isPythonCompilationError =
+        error.includes("SyntaxError") ||
+        error.includes("IndentationError") ||
+        error.includes("TabError");
+
+    if (isPythonCompilationError) {
         reject({
             type: VERDICTS.COMPILATION_ERROR,
             message: error || "Compilation failed."
